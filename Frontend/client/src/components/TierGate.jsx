@@ -61,20 +61,19 @@ export default function TierGate({ requiredTier, label, children }) {
         {children}
       </Box>
 
-      {/* Upgrade overlay — centered on top of blurred content */}
+      {/* Upgrade overlay — fixed to viewport center so it stays visible while scrolling */}
       <Box
         sx={{
-          position: 'absolute',
+          position: 'fixed',
           top: 0,
-          left: 0,
+          left: LAYOUT.sidebarWidth,
           right: 0,
           bottom: 0,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          // Subtle dark gradient so text is always readable against any blurred content
-          background: 'radial-gradient(ellipse at center, rgba(10, 14, 23, 0.7) 0%, rgba(10, 14, 23, 0.3) 70%, transparent 100%)',
-          zIndex: 2,
+          pointerEvents: 'none',
+          zIndex: 20,
         }}
       >
         <Box
@@ -89,6 +88,7 @@ export default function TierGate({ requiredTier, label, children }) {
             border: `1px solid ${tierColor}40`,
             boxShadow: `0 0 30px ${tierColor}20, 0 8px 32px rgba(0, 0, 0, 0.5)`,
             backdropFilter: 'blur(4px)',
+            pointerEvents: 'auto',
           }}
         >
           <LockOutlinedIcon sx={{ color: tierColor, fontSize: '2rem' }} />
