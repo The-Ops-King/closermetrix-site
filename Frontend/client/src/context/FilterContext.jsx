@@ -9,7 +9,7 @@
  *   closerIds: string[] — empty = all closers (Basic tier always empty)
  *   objectionType: string[] | null — multi-select, null = all types
  *   granularity: 'daily' | 'weekly' | 'monthly' — for time-series chart bucketing
- *   riskCategory: string | null — Executive only
+ *   riskCategory: string[] | null — Executive only, multi-select
  */
 
 import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
@@ -62,7 +62,7 @@ export function FilterProvider({ children }) {
       params.objectionType = objectionType.join(',');
     }
     if (granularity) params.granularity = granularity;
-    if (riskCategory) params.riskCategory = riskCategory;
+    if (riskCategory && riskCategory.length > 0) params.riskCategory = riskCategory.join(',');
     return params;
   }, [dateRange, closerIds, objectionType, granularity, riskCategory]);
 

@@ -23,6 +23,7 @@ import TierBadge from './TierBadge';
 import DateRangeFilter from '../filters/DateRangeFilter';
 import CloserFilter from '../filters/CloserFilter';
 import ObjectionTypeFilter from '../filters/ObjectionTypeFilter';
+import RiskCategoryFilter from '../filters/RiskCategoryFilter';
 
 /**
  * Convert an array of row objects to a CSV string.
@@ -68,6 +69,7 @@ function downloadCsv(csvString, filename) {
 export default function TopBar({ companyName, tier }) {
   const location = useLocation();
   const isObjectionsPage = location.pathname.includes('/objections');
+  const isViolationsPage = location.pathname.includes('/violations');
   const { token, mode, adminViewClientId } = useAuth();
   const { queryParams, dateRange } = useFilters();
   const [downloading, setDownloading] = useState(false);
@@ -144,6 +146,9 @@ export default function TopBar({ companyName, tier }) {
         )}
         {isObjectionsPage && meetsMinTier(tier, 'insight') && (
           <ObjectionTypeFilter />
+        )}
+        {isViolationsPage && meetsMinTier(tier, 'executive') && (
+          <RiskCategoryFilter />
         )}
         <DateRangeFilter />
         <Tooltip title="Download filtered calls as CSV" arrow>

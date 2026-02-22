@@ -7,14 +7,14 @@
  *
  * Red/magenta glow theme throughout — this page feels dangerous on purpose.
  *
- * Sections:
- *   1. Risk Overview — 5 scorecards (flag count, unique calls, % calls, trend, FTC/SEC count)
- *   2. Risk Categories — 4 scorecards (Claims, Guarantees, Earnings, Pressure)
- *   3. Risk by Call Type — 2 scorecards (First Call %, Follow-Up %)
- *   4. Compliance Issues Over Time — line chart
- *   5. Risk Review Table — the big feature, exact flagged phrases with context
- *   6. Risk Flags by Closer — bar chart
- *   7. Risk Category Trends — line chart
+ * Layout Order:
+ *   1. Risk Overview — 5 scorecards (columns=5, per-card glowColor)
+ *   2. Charts row — 2-col grid: Compliance Over Time (left) | Flags by Closer (right)
+ *   3. Risk Categories — 4 scorecards centered (6-col grid, cards span cols 2-5)
+ *   4. Risk Category Trends — full-width line chart
+ *   5. Risk by Call Type — 2 scorecards (columns=2)
+ *   6. Risk Review Table — with inline filter bar (reads FilterContext)
+ *   7. Footer
  *
  * Data: GET /api/dashboard/violations
  */
@@ -31,7 +31,6 @@ import ScorecardGrid from '../../components/scorecards/ScorecardGrid';
 import ChartWrapper from '../../components/charts/ChartWrapper';
 import TronLineChart from '../../components/charts/TronLineChart';
 import TronBarChart from '../../components/charts/TronBarChart';
-
 import RiskReviewTable from '../../components/tables/RiskReviewTable';
 import TierGate from '../../components/TierGate';
 
@@ -89,7 +88,7 @@ export default function ViolationsPage() {
       <TierGate requiredTier="executive" label="violation intelligence">
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
 
-          {/* Risk Overview — 5 scorecards */}
+          {/* 1. Risk Overview — 5 scorecards */}
           <ScorecardGrid
             title="Risk Overview"
             metrics={sections.overview}
@@ -97,7 +96,51 @@ export default function ViolationsPage() {
             columns={5}
           />
 
-          {/* Risk Categories — 4 scorecards (Claims, Guarantees, Earnings, Pressure) */}
+          {/* 2. Charts row — 2-col grid */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+              gap: 2,
+            }}
+          >
+            {/* Compliance Issues Over Time — Line chart (left) */}
+            <ChartWrapper
+              title="Compliance Issues Over Time"
+              accentColor={COLORS.neon.red}
+              loading={isLoading}
+              error={error?.message}
+              isEmpty={!charts.complianceOverTime?.data?.length}
+              height={280}
+            >
+              <TronLineChart
+                data={charts.complianceOverTime?.data || []}
+                series={charts.complianceOverTime?.series || []}
+                height={280}
+                yAxisFormat="number"
+                showArea={true}
+              />
+            </ChartWrapper>
+
+            {/* Risk Flags by Closer — Bar chart (right) */}
+            <ChartWrapper
+              title="Risk Flags by Closer"
+              accentColor={COLORS.neon.amber}
+              loading={isLoading}
+              error={error?.message}
+              isEmpty={!charts.flagsByCloser?.data?.length}
+              height={280}
+            >
+              <TronBarChart
+                data={charts.flagsByCloser?.data || []}
+                series={charts.flagsByCloser?.series || []}
+                height={280}
+                yAxisFormat="number"
+              />
+            </ChartWrapper>
+          </Box>
+
+          {/* 3. Risk Categories — 4 scorecards full width */}
           <ScorecardGrid
             title="Risk Categories"
             metrics={sections.riskCategories}
@@ -105,76 +148,7 @@ export default function ViolationsPage() {
             columns={4}
           />
 
-          {/* Risk by Call Type — 2 scorecards */}
-          <ScorecardGrid
-            title="Risk by Call Type"
-            metrics={sections.riskByCallType}
-            glowColor={COLORS.neon.magenta}
-            columns={2}
-          />
-
-          {/* Compliance Issues Over Time — Line chart */}
-          <ChartWrapper
-            title="Compliance Issues Over Time"
-            accentColor={COLORS.neon.red}
-            loading={isLoading}
-            error={error?.message}
-            isEmpty={!charts.complianceOverTime?.data?.length}
-            height={280}
-          >
-            <TronLineChart
-              data={charts.complianceOverTime?.data || []}
-              series={charts.complianceOverTime?.series || []}
-              height={280}
-              yAxisFormat="number"
-              showArea={true}
-            />
-          </ChartWrapper>
-
-          {/* Risk Review Table — the money feature */}
-          <Box>
-            <Box
-              sx={{
-                borderTop: `1px solid ${COLORS.border.subtle}`,
-                mb: 2,
-                pt: 3,
-              }}
-            >
-              <Typography
-                variant="h5"
-                sx={{
-                  color: COLORS.text.secondary,
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  mb: 2,
-                }}
-              >
-                Risk Review — Flagged Phrases
-              </Typography>
-            </Box>
-            <RiskReviewTable rows={tables.riskReview?.rows || []} />
-          </Box>
-
-          {/* Risk Flags by Closer — Bar chart */}
-          <ChartWrapper
-            title="Risk Flags by Closer"
-            accentColor={COLORS.neon.amber}
-            loading={isLoading}
-            error={error?.message}
-            isEmpty={!charts.flagsByCloser?.data?.length}
-            height={280}
-          >
-            <TronBarChart
-              data={charts.flagsByCloser?.data || []}
-              series={charts.flagsByCloser?.series || []}
-              height={280}
-              yAxisFormat="number"
-            />
-          </ChartWrapper>
-
-          {/* Risk Category Trends — Line chart */}
+          {/* 4. Risk Category Trends — full-width line chart */}
           <ChartWrapper
             title="Risk Category Trends"
             accentColor={COLORS.neon.magenta}
@@ -189,10 +163,22 @@ export default function ViolationsPage() {
               height={280}
               yAxisFormat="number"
               showArea={true}
+              stacked={true}
             />
           </ChartWrapper>
 
-          {/* Footer */}
+          {/* 5. Risk by Call Type — 2 scorecards */}
+          <ScorecardGrid
+            title="Risk by Call Type"
+            metrics={sections.riskByCallType}
+            glowColor={COLORS.neon.magenta}
+            columns={2}
+          />
+
+          {/* 6. Risk Review Table — with inline filter bar */}
+          <RiskReviewTable rows={tables.riskReview?.rows || []} />
+
+          {/* 7. Footer */}
           <Box
             sx={{
               display: 'flex',

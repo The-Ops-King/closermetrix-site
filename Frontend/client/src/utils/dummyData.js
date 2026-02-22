@@ -351,21 +351,21 @@ export const DUMMY_PROJECTIONS = {
 export const DUMMY_VIOLATIONS = {
   sections: {
     overview: {
-      flagCount: { label: 'Risk Flags', value: 14, format: 'number' },
-      uniqueCalls: { label: 'Unique Calls w/ Risk', value: 9, format: 'number' },
-      pctCalls: { label: '% Calls w/ Flags', value: 0.087, format: 'percent' },
-      trend: { label: 'Risk Trend', value: 'Stable', format: 'text' },
-      ftcSecCount: { label: 'FTC / SEC Warnings', value: 7, format: 'number' },
+      flagCount: { label: 'Risk Flags', value: 14, format: 'number', glowColor: 'red' },
+      uniqueCalls: { label: 'Unique Calls w/ Risk', value: 9, format: 'number', glowColor: 'red' },
+      pctCalls: { label: '% Calls w/ Flags', value: 0.087, format: 'percent', glowColor: 'amber' },
+      avgFlaggedPerCall: { label: 'Avg Flagged / Call', value: 1.56, format: 'decimal', glowColor: 'amber' },
+      ftcSecCount: { label: 'FTC / SEC Warnings', value: 7, format: 'number', glowColor: 'magenta' },
     },
     riskCategories: {
-      claims: { label: 'Claims', value: 5, format: 'number' },
-      guarantees: { label: 'Guarantees', value: 3, format: 'number' },
-      earnings: { label: 'Earnings / Income', value: 4, format: 'number' },
-      pressure: { label: 'Pressure / Urgency', value: 2, format: 'number' },
+      claims: { label: 'Claims', value: 5, format: 'number', glowColor: 'red' },
+      guarantees: { label: 'Guarantees', value: 3, format: 'number', glowColor: 'amber' },
+      earnings: { label: 'Earnings / Income', value: 4, format: 'number', glowColor: 'magenta' },
+      pressure: { label: 'Pressure / Urgency', value: 2, format: 'number', glowColor: 'purple' },
     },
     riskByCallType: {
-      firstCall: { label: 'First Call Infractions', value: 0.06, format: 'percent' },
-      followUp: { label: 'Follow-Up Infractions', value: 0.11, format: 'percent' },
+      firstCall: { label: 'First Call Infractions', value: 0.06, format: 'percent', glowColor: 'red' },
+      followUp: { label: 'Follow-Up Infractions', value: 0.11, format: 'percent', glowColor: 'red' },
     },
   },
   charts: {
@@ -404,9 +404,9 @@ export const DUMMY_VIOLATIONS = {
   tables: {
     riskReview: {
       rows: [
-        { date: '2026-01-22', closer: 'Closer B', callType: 'First Call', category: 'Claims', timestamp: '12:34', phrase: 'You will definitely see results...', reason: 'Unsubstantiated claim', recordingUrl: '#', transcriptUrl: '#' },
-        { date: '2026-01-20', closer: 'Closer C', callType: 'Follow-Up', category: 'Guarantees', timestamp: '08:15', phrase: 'I guarantee this will work...', reason: 'Prohibited guarantee language', recordingUrl: '#', transcriptUrl: '#' },
-        { date: '2026-01-18', closer: 'Closer B', callType: 'First Call', category: 'Earnings', timestamp: '22:10', phrase: 'Most people make back their investment...', reason: 'Income claim without disclaimer', recordingUrl: '#', transcriptUrl: '#' },
+        { date: '2026-01-22', closer: 'Closer B', closerId: 'demo_closer_2', callType: 'First Call', category: 'Claims', timestamp: '12:34', phrase: 'You will definitely see results...', reason: 'Unsubstantiated claim', recordingUrl: '#', transcriptUrl: '#' },
+        { date: '2026-01-20', closer: 'Closer C', closerId: 'demo_closer_3', callType: 'Follow-Up', category: 'Guarantees', timestamp: '08:15', phrase: 'I guarantee this will work...', reason: 'Prohibited guarantee language', recordingUrl: '#', transcriptUrl: '#' },
+        { date: '2026-01-18', closer: 'Closer B', closerId: 'demo_closer_2', callType: 'First Call', category: 'Earnings', timestamp: '22:10', phrase: 'Most people make back their investment...', reason: 'Income claim without disclaimer', recordingUrl: '#', transcriptUrl: '#' },
       ],
     },
   },

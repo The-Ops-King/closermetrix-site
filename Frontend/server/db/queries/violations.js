@@ -10,7 +10,7 @@
  *   Calls table -- Direct access for compliance-specific columns
  *
  * Sections:
- *   overview -- 5 scorecards: risk flags, unique calls with risk, % calls, trend, FTC/SEC
+ *   overview -- 5 scorecards: risk flags, unique calls with risk, % calls, avg flagged/call, FTC/SEC
  *   riskCategories -- 4 scorecards: claims, guarantees, earnings, pressure
  *   riskByCallType -- 2 scorecards: first call vs follow-up infraction rates
  *
@@ -76,21 +76,21 @@ function getDemoData(tier = 'executive', filters = {}) {
   return {
     sections: {
       overview: {
-        riskFlagCount: { value: 14, label: 'Risk Flags (Total)', format: 'number' },
-        uniqueCallsWithRisk: { value: 9, label: 'Unique Calls with Risk', format: 'number' },
-        pctCallsWithRisk: { value: 0.055, label: '% Calls with Risk Flags', format: 'percent' },
-        riskTrend: { value: 'Decreasing', label: 'Risk Trend', format: 'text' },
-        ftcSecWarnings: { value: 7, label: 'FTC / SEC Warnings', format: 'number' },
+        riskFlagCount: { value: 14, label: 'Risk Flags (Total)', format: 'number', glowColor: 'red' },
+        uniqueCallsWithRisk: { value: 9, label: 'Unique Calls with Risk', format: 'number', glowColor: 'red' },
+        pctCallsWithRisk: { value: 0.055, label: '% Calls with Risk Flags', format: 'percent', glowColor: 'amber' },
+        avgFlaggedPerCall: { value: 1.56, label: 'Avg Flagged / Call', format: 'decimal', glowColor: 'amber' },
+        ftcSecWarnings: { value: 7, label: 'FTC / SEC Warnings', format: 'number', glowColor: 'magenta' },
       },
       riskCategories: {
-        claims: { value: 4, label: 'Claims', format: 'number' },
-        guarantees: { value: 3, label: 'Guarantees', format: 'number' },
-        earnings: { value: 5, label: 'Earnings / Income', format: 'number' },
-        pressure: { value: 2, label: 'Pressure / Urgency', format: 'number' },
+        claims: { value: 4, label: 'Claims', format: 'number', glowColor: 'red' },
+        guarantees: { value: 3, label: 'Guarantees', format: 'number', glowColor: 'amber' },
+        earnings: { value: 5, label: 'Earnings / Income', format: 'number', glowColor: 'magenta' },
+        pressure: { value: 2, label: 'Pressure / Urgency', format: 'number', glowColor: 'purple' },
       },
       riskByCallType: {
-        firstCallRisk: { value: 0.038, label: 'First Call Infractions', format: 'percent' },
-        followUpRisk: { value: 0.072, label: 'Follow-Up Infractions', format: 'percent' },
+        firstCallRisk: { value: 0.038, label: 'First Call Infractions', format: 'percent', glowColor: 'red' },
+        followUpRisk: { value: 0.072, label: 'Follow-Up Infractions', format: 'percent', glowColor: 'red' },
       },
     },
     charts: {
@@ -99,11 +99,9 @@ function getDemoData(tier = 'executive', filters = {}) {
         label: 'Compliance Issues Over Time',
         series: [
           { key: 'flags', label: 'Risk Flags', color: 'red' },
-          { key: 'warnings', label: 'FTC/SEC Warnings', color: 'amber' },
         ],
         data: generateTimeSeries(filters, [
           { key: 'flags', base: 2, variance: 1.2 },
-          { key: 'warnings', base: 1, variance: 0.8 },
         ]),
       },
       flagsByCloser: {
@@ -127,10 +125,10 @@ function getDemoData(tier = 'executive', filters = {}) {
           { key: 'pressure', label: 'Pressure', color: 'purple' },
         ],
         data: generateTimeSeries(filters, [
-          { key: 'claims', base: 0.6, variance: 0.5 },
-          { key: 'guarantees', base: 0.4, variance: 0.4 },
-          { key: 'earnings', base: 0.7, variance: 0.5 },
-          { key: 'pressure', base: 0.3, variance: 0.3 },
+          { key: 'claims', base: 1, variance: 1 },
+          { key: 'guarantees', base: 1, variance: 1 },
+          { key: 'earnings', base: 1, variance: 1 },
+          { key: 'pressure', base: 1, variance: 0.8 },
         ]),
       },
     },
@@ -141,6 +139,7 @@ function getDemoData(tier = 'executive', filters = {}) {
           {
             date: '2026-02-15',
             closer: 'Mike',
+            closerId: 'demo_closer_2',
             callType: 'First Call',
             riskCategory: 'Earnings',
             timestamp: '12:34',
@@ -152,6 +151,7 @@ function getDemoData(tier = 'executive', filters = {}) {
           {
             date: '2026-02-14',
             closer: 'Alex',
+            closerId: 'demo_closer_4',
             callType: 'Follow-Up',
             riskCategory: 'Guarantees',
             timestamp: '08:22',
@@ -163,6 +163,7 @@ function getDemoData(tier = 'executive', filters = {}) {
           {
             date: '2026-02-13',
             closer: 'Mike',
+            closerId: 'demo_closer_2',
             callType: 'First Call',
             riskCategory: 'Claims',
             timestamp: '22:15',
@@ -174,6 +175,7 @@ function getDemoData(tier = 'executive', filters = {}) {
           {
             date: '2026-02-12',
             closer: 'Jessica',
+            closerId: 'demo_closer_3',
             callType: 'First Call',
             riskCategory: 'Pressure',
             timestamp: '31:08',
@@ -185,6 +187,7 @@ function getDemoData(tier = 'executive', filters = {}) {
           {
             date: '2026-02-11',
             closer: 'Alex',
+            closerId: 'demo_closer_4',
             callType: 'Follow-Up',
             riskCategory: 'Earnings',
             timestamp: '15:42',
@@ -196,6 +199,7 @@ function getDemoData(tier = 'executive', filters = {}) {
           {
             date: '2026-02-10',
             closer: 'Sarah',
+            closerId: 'demo_closer_1',
             callType: 'First Call',
             riskCategory: 'Guarantees',
             timestamp: '18:55',
@@ -207,6 +211,7 @@ function getDemoData(tier = 'executive', filters = {}) {
           {
             date: '2026-02-09',
             closer: 'Mike',
+            closerId: 'demo_closer_2',
             callType: 'First Call',
             riskCategory: 'Claims',
             timestamp: '25:30',
@@ -218,6 +223,7 @@ function getDemoData(tier = 'executive', filters = {}) {
           {
             date: '2026-02-08',
             closer: 'Sarah',
+            closerId: 'demo_closer_1',
             callType: 'Follow-Up',
             riskCategory: 'Pressure',
             timestamp: '05:12',
@@ -229,6 +235,7 @@ function getDemoData(tier = 'executive', filters = {}) {
           {
             date: '2026-02-07',
             closer: 'Jessica',
+            closerId: 'demo_closer_3',
             callType: 'Follow-Up',
             riskCategory: 'Earnings',
             timestamp: '19:48',
@@ -240,6 +247,7 @@ function getDemoData(tier = 'executive', filters = {}) {
           {
             date: '2026-02-06',
             closer: 'Alex',
+            closerId: 'demo_closer_4',
             callType: 'First Call',
             riskCategory: 'Claims',
             timestamp: '28:03',
