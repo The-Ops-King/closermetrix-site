@@ -85,9 +85,9 @@ export default function TronRadarChart({
   const cx = viewBoxWidth / 2;
 
   // Reserve space: top for labels, bottom for legend
-  const legendHeight = 40;
-  const labelPadding = 50; // space outside the polygon for axis labels
-  const topPadding = 30;
+  const legendHeight = 30;
+  const labelPadding = 35; // space outside the polygon for axis labels
+  const topPadding = 20;
 
   // The chart center is offset slightly toward the top to leave room for the legend
   const chartAreaHeight = viewBoxHeight - legendHeight - topPadding;
@@ -245,8 +245,8 @@ export default function TronRadarChart({
             key={`scale-${i}`}
             x={sl.x}
             y={sl.y}
-            fill={COLORS.text.muted}
-            fontSize={10}
+            fill={COLORS.text.secondary}
+            fontSize={11}
             textAnchor="start"
           >
             {sl.value}
@@ -259,8 +259,9 @@ export default function TronRadarChart({
             key={`label-${i}`}
             x={labelPositions[i].x}
             y={labelPositions[i].y}
-            fill={COLORS.text.secondary}
-            fontSize={12}
+            fill={COLORS.text.primary}
+            fontSize={14}
+            fontWeight={500}
             fontFamily="Inter, Roboto, Helvetica, sans-serif"
             textAnchor={getLabelAnchor(i)}
             dy={getLabelDy(i)}

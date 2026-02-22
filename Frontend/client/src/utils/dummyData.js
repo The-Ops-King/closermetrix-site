@@ -436,9 +436,11 @@ export const DUMMY_ADHERENCE = {
   charts: {
     radarData: {
       axes: ['Intro', 'Pain', 'Discovery', 'Goal', 'Transition', 'Pitch', 'Close', 'Objections'],
-      data: [
-        { label: 'Team Average', values: [8.1, 7.2, 6.9, 7.5, 7.8, 7.0, 6.5, 6.8], color: '#4DD4E8' },
-        { label: 'Top Performer', values: [9.2, 8.5, 8.1, 8.8, 9.0, 8.3, 7.9, 8.0], color: '#00ff88' },
+      byCloser: [
+        { label: 'Closer A', closerId: 'dummy_1', values: [9.0, 8.5, 8.1, 8.8, 9.0, 8.3, 7.9, 8.0] },
+        { label: 'Closer B', closerId: 'dummy_2', values: [7.5, 6.8, 6.5, 7.0, 7.2, 6.0, 5.5, 5.8] },
+        { label: 'Closer C', closerId: 'dummy_3', values: [8.2, 7.5, 7.2, 7.8, 7.9, 7.0, 6.2, 6.5] },
+        { label: 'Closer D', closerId: 'dummy_4', values: [7.8, 6.2, 5.8, 6.4, 7.0, 5.2, 4.8, 5.0] },
       ],
     },
     adherenceByCloser: {

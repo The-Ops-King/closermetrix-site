@@ -91,9 +91,11 @@ function getDemoData(tier = 'executive', filters = {}) {
         type: 'radar',
         label: 'Script Adherence by Section',
         axes: ['Intro', 'Pain', 'Discovery', 'Goal', 'Transition', 'Pitch', 'Close', 'Objections'],
-        data: [
-          { label: 'Team Average', values: [8.1, 7.4, 6.9, 7.6, 7.8, 6.5, 5.8, 6.2], color: '#4DD4E8' },
-          { label: 'Top Performer', values: [9.2, 8.8, 8.5, 9.0, 8.9, 8.2, 7.8, 8.0], color: '#6BCF7F' },
+        byCloser: [
+          { label: 'Sarah', closerId: 'demo_closer_1', values: [9.2, 8.8, 8.5, 9.0, 8.9, 8.2, 7.8, 8.0] },
+          { label: 'Mike', closerId: 'demo_closer_2', values: [7.4, 6.8, 6.2, 7.0, 7.2, 5.8, 4.9, 5.5] },
+          { label: 'Jessica', closerId: 'demo_closer_3', values: [8.0, 7.5, 7.1, 7.8, 7.9, 6.8, 6.0, 6.5] },
+          { label: 'Alex', closerId: 'demo_closer_4', values: [7.8, 6.5, 5.8, 6.6, 7.2, 5.2, 4.5, 5.0] },
         ],
       },
       adherenceByCloser: {
