@@ -42,7 +42,7 @@ import { COLOR_MAP } from '../../utils/colors';
 export default function TronLineChart({
   data = [],
   series = [],
-  height = 350,
+  height,
   yAxisFormat = 'number',
   showArea = true,
   stacked = false,
@@ -88,7 +88,7 @@ export default function TronLineChart({
 
   return (
     <LineChart
-      height={height}
+      {...(height != null ? { height } : {})}
       series={chartSeries}
       xAxis={[
         {
@@ -111,6 +111,8 @@ export default function TronLineChart({
             fill: COLORS.text.secondary,
             fontSize: 12,
           },
+          // Force integer ticks when values are whole numbers (prevents "1, 1, 1, 2" duplicates)
+          ...(yAxisFormat === 'number' ? { tickMinStep: 1 } : {}),
         },
       ]}
       grid={{

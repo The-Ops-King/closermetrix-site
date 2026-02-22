@@ -1,46 +1,44 @@
 /**
- * CLOSER FILTER -- Insight+ Only
+ * CLOSER FILTER -- Insight+ Only (Multi-Select)
  *
- * Multi-select dropdown of closers for this client.
+ * Multi-select dropdown of closers for this client with chip rendering.
  * Populated from AuthContext closers list.
  * Hidden for Basic tier clients (controlled by parent -- this component
  * doesn't check tier itself; the page/layout decides whether to render it).
  *
- * Updates FilterContext closerId when selection changes.
+ * Updates FilterContext closerIds (string[]) when selection changes.
  */
 
 import React from 'react';
 import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Chip from '@mui/material/Chip';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 import { COLORS } from '../../theme/constants';
 import { useAuth } from '../../context/AuthContext';
 import { useFilters } from '../../context/FilterContext';
 
 export default function CloserFilter({ disabled = false }) {
   const { closers } = useAuth();
-  const { closerId, setCloserId } = useFilters();
+  const { closerIds, setCloserIds } = useFilters();
 
   // When disabled (Basic tier), render a locked placeholder shell
   if (disabled) {
     return (
       <FormControl size="small" sx={{ minWidth: 180 }} disabled>
-        <InputLabel
-          shrink
-          sx={{
-            color: COLORS.text.muted,
-          }}
-        >
-          Closer
-        </InputLabel>
         <Select
-          value=""
-          label="Closer"
+          value={[]}
+          multiple
           displayEmpty
           IconComponent={() => (
             <LockOutlinedIcon sx={{ color: COLORS.text.muted, fontSize: '1rem', mr: 1 }} />
+          )}
+          renderValue={() => (
+            <em style={{ color: COLORS.text.muted }}>All Closers</em>
           )}
           sx={{
             color: COLORS.text.muted,
@@ -64,31 +62,73 @@ export default function CloserFilter({ disabled = false }) {
     return null;
   }
 
+  // Build a lookup map for closer_id → name
+  const closerMap = {};
+  closers.forEach((c) => { closerMap[c.closer_id] = c.name; });
+
+  const hasSelection = closerIds.length > 0;
+
   return (
-    <FormControl size="small" sx={{ minWidth: 180 }}>
-      <InputLabel
-        sx={{
-          color: COLORS.text.secondary,
-          '&.Mui-focused': { color: COLORS.neon.cyan },
-        }}
-      >
-        Closer
-      </InputLabel>
+    <FormControl size="small" sx={{ minWidth: 180, maxWidth: 320 }}>
       <Select
-        value={closerId || ''}
-        label="Closer"
-        onChange={(e) => setCloserId(e.target.value || null)}
+        multiple
+        value={closerIds}
+        onChange={(e) => setCloserIds(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
+        renderValue={(selected) => {
+          if (!selected || selected.length === 0) {
+            return <em style={{ color: COLORS.text.secondary }}>All Closers</em>;
+          }
+          return (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+              {selected.map((id) => (
+                <Chip
+                  key={id}
+                  label={closerMap[id] || id}
+                  size="small"
+                  sx={{
+                    height: 22,
+                    fontSize: '0.72rem',
+                    backgroundColor: 'rgba(77, 212, 232, 0.15)',
+                    color: COLORS.neon.cyan,
+                    border: '1px solid rgba(77, 212, 232, 0.3)',
+                    '& .MuiChip-deleteIcon': {
+                      color: COLORS.neon.cyan,
+                      fontSize: '0.85rem',
+                      '&:hover': { color: COLORS.text.primary },
+                    },
+                  }}
+                  onDelete={(e) => {
+                    e.stopPropagation();
+                    setCloserIds(closerIds.filter((cid) => cid !== id));
+                  }}
+                  onMouseDown={(e) => e.stopPropagation()}
+                />
+              ))}
+            </Box>
+          );
+        }}
+        displayEmpty
+        endAdornment={hasSelection ? (
+          <IconButton
+            size="small"
+            onClick={(e) => { e.stopPropagation(); setCloserIds([]); }}
+            onMouseDown={(e) => e.stopPropagation()}
+            sx={{ mr: 1.5, p: 0.3, color: COLORS.text.muted, '&:hover': { color: COLORS.text.primary } }}
+          >
+            <CloseIcon sx={{ fontSize: '0.9rem' }} />
+          </IconButton>
+        ) : null}
         sx={{
           color: COLORS.text.primary,
           backgroundColor: COLORS.bg.secondary,
           '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: COLORS.border.default,
+            borderColor: hasSelection ? COLORS.neon.cyan : COLORS.border.default,
           },
           '&:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: COLORS.neon.cyan,
+            borderColor: hasSelection ? COLORS.neon.cyan : COLORS.border.default,
           },
           '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: COLORS.neon.cyan,
+            borderColor: hasSelection ? COLORS.neon.cyan : COLORS.border.default,
           },
           '& .MuiSvgIcon-root': {
             color: COLORS.text.secondary,
@@ -99,18 +139,24 @@ export default function CloserFilter({ disabled = false }) {
             sx: {
               backgroundColor: COLORS.bg.secondary,
               border: `1px solid ${COLORS.border.default}`,
+              maxHeight: 300,
             },
           },
         }}
       >
-        <MenuItem value="">
-          <em style={{ color: COLORS.text.secondary }}>All Closers</em>
-        </MenuItem>
         {closers.map((closer) => (
           <MenuItem
             key={closer.closer_id}
             value={closer.closer_id}
-            sx={{ color: COLORS.text.primary }}
+            sx={{
+              color: COLORS.text.primary,
+              '&.Mui-selected': {
+                backgroundColor: 'rgba(77, 212, 232, 0.08)',
+              },
+              '&.Mui-selected:hover': {
+                backgroundColor: 'rgba(77, 212, 232, 0.12)',
+              },
+            }}
           >
             {closer.name}
           </MenuItem>

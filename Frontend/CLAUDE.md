@@ -1120,7 +1120,7 @@ text.muted: '#64748b'   // Gray — disqualified, timestamps, less important inf
 | Disqualified| `muted`   | `#64748b` | Health column, DQ section (gray, not cyan) |
 | Not Pitched | `blue`    | `#4D7CFF` | Health column, Not Pitched section |
 
-**Backend color usage:** Chart series use friendly names (`'green'`, `'purple'`, `'muted'`, etc.) resolved via `COLOR_MAP` in `client/src/utils/colors.js`. Pie chart data uses `NEON.*` constants defined at the top of `callOutcomes.js` (mirrors the frontend theme). Never use hardcoded hex in chart series — always use the color name or NEON constant.
+**CRITICAL — Always use color variable names, NEVER hardcoded hex codes.** All colors throughout the app — in backend demo data, chart series, component styles, and anywhere else — must use the friendly color names (`'cyan'`, `'green'`, `'amber'`, `'purple'`, `'red'`, `'blue'`, `'teal'`, `'muted'`) which get resolved via `COLOR_MAP` in `client/src/utils/colors.js`. On the frontend, always reference `COLORS.neon.*` or `COLORS.text.*` from `client/src/theme/constants.js`. Never write a raw hex string like `'#4DD4E8'` — always use the variable name.
 
 ### Other Theme Values
 

@@ -119,7 +119,7 @@ function StackedAxisTooltip({ axisValue, series, dataIndex, stackTotalLabel, yAx
 export default function TronBarChart({
   data = [],
   series = [],
-  height = 350,
+  height,
   layout = 'vertical',
   stacked = false,
   yAxisFormat = 'number',
@@ -174,6 +174,8 @@ export default function TronBarChart({
             fill: COLORS.text.secondary,
             fontSize: 11,
           },
+          // Force integer ticks when values are whole numbers
+          ...(yAxisFormat === 'number' ? { tickMinStep: 1 } : {}),
         },
       ]
     : [
@@ -209,6 +211,8 @@ export default function TronBarChart({
             fill: COLORS.text.secondary,
             fontSize: 12,
           },
+          // Force integer ticks when values are whole numbers
+          ...(yAxisFormat === 'number' ? { tickMinStep: 1 } : {}),
         },
       ];
 
@@ -216,11 +220,11 @@ export default function TronBarChart({
   const leftMargin = isHorizontal ? 130 : 70;
   // Increase bottom margin when vertical labels will be rotated (long names or many categories)
   const needsRotation = !isHorizontal && (categoryLabels.length > 8 || categoryLabels.some((l) => l.length > 10));
-  const bottomMargin = needsRotation ? 80 : 40;
+  const bottomMargin = needsRotation ? 70 : 30;
 
   return (
     <BarChart
-      height={height}
+      {...(height != null ? { height } : {})}
       series={chartSeries}
       xAxis={xAxisConfig}
       yAxis={yAxisConfig}

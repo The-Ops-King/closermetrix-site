@@ -143,15 +143,13 @@ const dateLabelSx = {
 /* ─── Component ───────────────────────────────────────────────────────── */
 
 export default function DateRangeFilter() {
-  const { dateRange, setDateRange } = useFilters();
+  const { dateRange, setDateRange, dateLabel, setDateLabel } = useFilters();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
   // Active mode tab: 'this' | 'last' | 'between'
   const [mode, setMode] = useState('this');
-  // Human-readable label shown on the trigger button
-  const [label, setLabel] = useState('This Month');
   // Which period button is highlighted (null when in "between" mode)
   const [activePeriod, setActivePeriod] = useState('Month');
   // Temporary state for the "Between" custom range inputs
@@ -168,11 +166,11 @@ export default function DateRangeFilter() {
   const handlePresetSelect = useCallback((selectedMode, period) => {
     const range = selectedMode === 'this' ? calcThisPeriod(period) : calcLastPeriod(period);
     setDateRange(range);
-    setLabel(`${selectedMode === 'this' ? 'This' : 'Last'} ${period}`);
+    setDateLabel(`${selectedMode === 'this' ? 'This' : 'Last'} ${period}`);
     setMode(selectedMode);
     setActivePeriod(period);
     setAnchorEl(null);
-  }, [setDateRange]);
+  }, [setDateRange, setDateLabel]);
 
   /**
    * Apply the custom "Between" date range.
@@ -182,11 +180,11 @@ export default function DateRangeFilter() {
     if (!betweenStart || !betweenEnd) return;
     if (dayjs(betweenStart).isAfter(dayjs(betweenEnd))) return;
     setDateRange({ start: betweenStart, end: betweenEnd });
-    setLabel(formatRangeLabel(betweenStart, betweenEnd));
+    setDateLabel(formatRangeLabel(betweenStart, betweenEnd));
     setMode('between');
     setActivePeriod(null);
     setAnchorEl(null);
-  }, [betweenStart, betweenEnd, setDateRange]);
+  }, [betweenStart, betweenEnd, setDateRange, setDateLabel]);
 
   /**
    * Switch mode tabs. Pre-fill "Between" inputs with the current date range.
@@ -215,7 +213,7 @@ export default function DateRangeFilter() {
           '&:hover': { backgroundColor: COLORS.bg.elevated, borderColor: COLORS.border.default },
         }}
       >
-        {label}
+        {dateLabel}
       </Button>
 
       {/* ── Popover ── */}
@@ -248,7 +246,7 @@ export default function DateRangeFilter() {
         {(mode === 'this' || mode === 'last') && (
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, p: 1.5 }}>
             {(mode === 'this' ? THIS_PERIODS : LAST_PERIODS).map((period) => {
-              const isActive = activePeriod === period && label === `${mode === 'this' ? 'This' : 'Last'} ${period}`;
+              const isActive = activePeriod === period && dateLabel === `${mode === 'this' ? 'This' : 'Last'} ${period}`;
               return (
                 <Button
                   key={period}

@@ -33,6 +33,7 @@ export const COLOR_MAP = {
   purple: COLORS.neon.purple,
   red: COLORS.neon.red,
   blue: COLORS.neon.blue,
+  teal: COLORS.neon.teal,
   muted: COLORS.text.muted,
 };
 

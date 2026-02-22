@@ -6,7 +6,7 @@
  *
  * Filters:
  *   dateRange: { start: string, end: string } — ISO date strings, defaults to "This Month"
- *   closerId: string | null — null = all closers (Basic tier always null)
+ *   closerIds: string[] — empty = all closers (Basic tier always empty)
  *   objectionType: string[] | null — multi-select, null = all types
  *   granularity: 'daily' | 'weekly' | 'monthly' — for time-series chart bucketing
  *   riskCategory: string | null — Executive only
@@ -30,7 +30,8 @@ function getDefaultDateRange() {
 
 export function FilterProvider({ children }) {
   const [dateRange, setDateRange] = useState(getDefaultDateRange);
-  const [closerId, setCloserId] = useState(null);
+  const [dateLabel, setDateLabel] = useState('This Month');
+  const [closerIds, setCloserIds] = useState([]);
   const [objectionType, setObjectionType] = useState(null);
   const [granularity, setGranularity] = useState('weekly');
   const [riskCategory, setRiskCategory] = useState(null);
@@ -40,7 +41,8 @@ export function FilterProvider({ children }) {
    */
   const resetFilters = useCallback(() => {
     setDateRange(getDefaultDateRange());
-    setCloserId(null);
+    setDateLabel('This Month');
+    setCloserIds([]);
     setObjectionType(null);
     setGranularity('weekly');
     setRiskCategory(null);
@@ -55,20 +57,22 @@ export function FilterProvider({ children }) {
       dateStart: dateRange.start,
       dateEnd: dateRange.end,
     };
-    if (closerId) params.closerId = closerId;
+    if (closerIds.length) params.closerId = closerIds.join(',');
     if (objectionType && objectionType.length > 0) {
       params.objectionType = objectionType.join(',');
     }
     if (granularity) params.granularity = granularity;
     if (riskCategory) params.riskCategory = riskCategory;
     return params;
-  }, [dateRange, closerId, objectionType, granularity, riskCategory]);
+  }, [dateRange, closerIds, objectionType, granularity, riskCategory]);
 
   const value = {
     dateRange,
     setDateRange,
-    closerId,
-    setCloserId,
+    dateLabel,
+    setDateLabel,
+    closerIds,
+    setCloserIds,
     objectionType,
     setObjectionType,
     granularity,

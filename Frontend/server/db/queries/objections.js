@@ -20,11 +20,12 @@
  *
  * Tables:
  *   byType -- Objection Type Summary: Type, Total, Resolved, Resolution Rate
+ *   byCloser -- Resolved by Closer: Closer, Total, Resolved, Resolution Rate
  */
 
 const bq = require('../BigQueryClient');
 const logger = require('../../utils/logger');
-const { generateTimeSeries } = require('./demoTimeSeries');
+const { computeGranularity } = require('./demoTimeSeries');
 
 /**
  * Fetch all objection intelligence data for a client.
@@ -66,22 +67,197 @@ async function queryBigQuery(clientId, filters, tier) {
 }
 
 // ================================================================
-// DEMO DATA -- Realistic sample data for development and demos
+// DEMO DATA -- Filter-aware sample data for development and demos
 // ================================================================
 
+/** Color assigned to each objection type (used by pie chart) */
+const TYPE_COLORS = {
+  'Financial': 'cyan',
+  'Think About It': 'amber',
+  'Spouse/Partner': 'blue',
+  'Timing': 'green',
+  'Already Tried': 'red',
+  'Not Interested': 'purple',
+  'Other': 'muted',
+};
+
+/** Closer ID → display name mapping (matches tokenManager demo closers) */
+const CLOSER_MAP = {
+  'demo_closer_1': 'Sarah',
+  'demo_closer_2': 'Mike',
+  'demo_closer_3': 'Jessica',
+  'demo_closer_4': 'Alex',
+};
+const NAME_TO_ID = Object.fromEntries(Object.entries(CLOSER_MAP).map(([id, name]) => [name, id]));
+
+/** Master list of objection records — all charts/scorecards are computed from this.
+ *  Each record has both closerId (for API filtering) and closer (display name). */
+const ALL_RECORDS = [
+  { objectionType: 'Financial', resolved: true, closerId: 'demo_closer_1', closer: 'Sarah', callOutcome: 'Closed - Won', appointmentDate: '2026-02-18', recordingUrl: 'https://app.closermetrix.com/recordings/rec001' },
+  { objectionType: 'Think About It', resolved: false, closerId: 'demo_closer_2', closer: 'Mike', callOutcome: 'Follow-Up', appointmentDate: '2026-02-17', recordingUrl: 'https://app.closermetrix.com/recordings/rec002' },
+  { objectionType: 'Spouse/Partner', resolved: true, closerId: 'demo_closer_3', closer: 'Jessica', callOutcome: 'Closed - Won', appointmentDate: '2026-02-16', recordingUrl: 'https://app.closermetrix.com/recordings/rec003' },
+  { objectionType: 'Timing', resolved: false, closerId: 'demo_closer_4', closer: 'Alex', callOutcome: 'Lost', appointmentDate: '2026-02-15', recordingUrl: 'https://app.closermetrix.com/recordings/rec004' },
+  { objectionType: 'Financial', resolved: true, closerId: 'demo_closer_1', closer: 'Sarah', callOutcome: 'Closed - Won', appointmentDate: '2026-02-14', recordingUrl: 'https://app.closermetrix.com/recordings/rec005' },
+  { objectionType: 'Already Tried', resolved: true, closerId: 'demo_closer_2', closer: 'Mike', callOutcome: 'Closed - Won', appointmentDate: '2026-02-13', recordingUrl: 'https://app.closermetrix.com/recordings/rec006' },
+  { objectionType: 'Not Interested', resolved: false, closerId: 'demo_closer_3', closer: 'Jessica', callOutcome: 'DQ', appointmentDate: '2026-02-12', recordingUrl: 'https://app.closermetrix.com/recordings/rec007' },
+  { objectionType: 'Other', resolved: true, closerId: 'demo_closer_4', closer: 'Alex', callOutcome: 'Follow-Up', appointmentDate: '2026-02-11', recordingUrl: 'https://app.closermetrix.com/recordings/rec008' },
+  { objectionType: 'Financial', resolved: false, closerId: 'demo_closer_2', closer: 'Mike', callOutcome: 'Lost', appointmentDate: '2026-02-10', recordingUrl: 'https://app.closermetrix.com/recordings/rec009' },
+  { objectionType: 'Think About It', resolved: true, closerId: 'demo_closer_1', closer: 'Sarah', callOutcome: 'Closed - Won', appointmentDate: '2026-02-09', recordingUrl: 'https://app.closermetrix.com/recordings/rec010' },
+  { objectionType: 'Spouse/Partner', resolved: false, closerId: 'demo_closer_4', closer: 'Alex', callOutcome: 'Follow-Up', appointmentDate: '2026-02-07', recordingUrl: 'https://app.closermetrix.com/recordings/rec011' },
+  { objectionType: 'Timing', resolved: true, closerId: 'demo_closer_3', closer: 'Jessica', callOutcome: 'Closed - Won', appointmentDate: '2026-02-05', recordingUrl: 'https://app.closermetrix.com/recordings/rec012' },
+  { objectionType: 'Already Tried', resolved: false, closerId: 'demo_closer_1', closer: 'Sarah', callOutcome: 'Lost', appointmentDate: '2026-02-03', recordingUrl: 'https://app.closermetrix.com/recordings/rec013' },
+  { objectionType: 'Not Interested', resolved: true, closerId: 'demo_closer_2', closer: 'Mike', callOutcome: 'Follow-Up', appointmentDate: '2026-01-30', recordingUrl: 'https://app.closermetrix.com/recordings/rec014' },
+  { objectionType: 'Financial', resolved: true, closerId: 'demo_closer_3', closer: 'Jessica', callOutcome: 'Closed - Won', appointmentDate: '2026-01-27', recordingUrl: 'https://app.closermetrix.com/recordings/rec015' },
+  { objectionType: 'Think About It', resolved: false, closerId: 'demo_closer_4', closer: 'Alex', callOutcome: 'Lost', appointmentDate: '2026-01-25', recordingUrl: 'https://app.closermetrix.com/recordings/rec016' },
+  { objectionType: 'Financial', resolved: true, closerId: 'demo_closer_1', closer: 'Sarah', callOutcome: 'Closed - Won', appointmentDate: '2026-01-23', recordingUrl: 'https://app.closermetrix.com/recordings/rec017' },
+  { objectionType: 'Spouse/Partner', resolved: true, closerId: 'demo_closer_2', closer: 'Mike', callOutcome: 'Closed - Won', appointmentDate: '2026-01-21', recordingUrl: 'https://app.closermetrix.com/recordings/rec018' },
+  { objectionType: 'Timing', resolved: false, closerId: 'demo_closer_3', closer: 'Jessica', callOutcome: 'Follow-Up', appointmentDate: '2026-01-19', recordingUrl: 'https://app.closermetrix.com/recordings/rec019' },
+  { objectionType: 'Already Tried', resolved: true, closerId: 'demo_closer_4', closer: 'Alex', callOutcome: 'Closed - Won', appointmentDate: '2026-01-17', recordingUrl: 'https://app.closermetrix.com/recordings/rec020' },
+  { objectionType: 'Financial', resolved: false, closerId: 'demo_closer_1', closer: 'Sarah', callOutcome: 'Follow-Up', appointmentDate: '2026-01-15', recordingUrl: 'https://app.closermetrix.com/recordings/rec021' },
+  { objectionType: 'Not Interested', resolved: false, closerId: 'demo_closer_2', closer: 'Mike', callOutcome: 'Lost', appointmentDate: '2026-01-13', recordingUrl: 'https://app.closermetrix.com/recordings/rec022' },
+  { objectionType: 'Other', resolved: true, closerId: 'demo_closer_3', closer: 'Jessica', callOutcome: 'Closed - Won', appointmentDate: '2026-01-11', recordingUrl: 'https://app.closermetrix.com/recordings/rec023' },
+  { objectionType: 'Think About It', resolved: true, closerId: 'demo_closer_4', closer: 'Alex', callOutcome: 'Closed - Won', appointmentDate: '2026-01-09', recordingUrl: 'https://app.closermetrix.com/recordings/rec024' },
+  { objectionType: 'Financial', resolved: true, closerId: 'demo_closer_2', closer: 'Mike', callOutcome: 'Closed - Won', appointmentDate: '2026-01-07', recordingUrl: 'https://app.closermetrix.com/recordings/rec025' },
+  { objectionType: 'Spouse/Partner', resolved: false, closerId: 'demo_closer_1', closer: 'Sarah', callOutcome: 'Lost', appointmentDate: '2026-01-05', recordingUrl: 'https://app.closermetrix.com/recordings/rec026' },
+  { objectionType: 'Timing', resolved: true, closerId: 'demo_closer_3', closer: 'Jessica', callOutcome: 'Closed - Won', appointmentDate: '2026-01-03', recordingUrl: 'https://app.closermetrix.com/recordings/rec027' },
+  { objectionType: 'Already Tried', resolved: false, closerId: 'demo_closer_4', closer: 'Alex', callOutcome: 'DQ', appointmentDate: '2026-01-01', recordingUrl: 'https://app.closermetrix.com/recordings/rec028' },
+];
+
+/** Top-3 color assignments keyed by objection type */
+const TREND_COLORS = {
+  'Financial': 'cyan',
+  'Think About It': 'amber',
+  'Spouse/Partner': 'blue',
+  'Timing': 'green',
+  'Already Tried': 'red',
+  'Not Interested': 'purple',
+  'Other': 'muted',
+};
+
+/**
+ * Build a time-series from actual records, bucketed by granularity.
+ * Returns { series, data } for the top 3 objection types in the filtered set.
+ */
+function buildTrendFromRecords(rows, filters) {
+  if (rows.length === 0) return { series: [], data: [] };
+
+  // Find top 3 types by count
+  const typeCounts = {};
+  rows.forEach((r) => { typeCounts[r.objectionType] = (typeCounts[r.objectionType] || 0) + 1; });
+  const top3 = Object.entries(typeCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([type]) => type);
+
+  // Determine date range and bucket size
+  const dates = rows.map((r) => r.appointmentDate).sort();
+  const dateStart = filters.dateStart || dates[0];
+  const dateEnd = filters.dateEnd || dates[dates.length - 1];
+  const { intervalDays } = computeGranularity(dateStart, dateEnd);
+
+  // Build buckets
+  const start = new Date(dateStart);
+  const end = new Date(dateEnd);
+  const buckets = [];
+  const current = new Date(start);
+  while (current <= end) {
+    buckets.push(current.toISOString().split('T')[0]);
+    current.setDate(current.getDate() + intervalDays);
+  }
+
+  // Make stable keys from type names (camelCase-ish)
+  const keyOf = (type) => type.replace(/[^a-zA-Z]/g, '').charAt(0).toLowerCase() + type.replace(/[^a-zA-Z]/g, '').slice(1);
+
+  // Count per bucket per type
+  const data = buckets.map((bucketDate, idx) => {
+    const bucketEnd = idx < buckets.length - 1 ? buckets[idx + 1] : '9999-12-31';
+    const point = { date: bucketDate };
+    top3.forEach((type) => {
+      point[keyOf(type)] = rows.filter(
+        (r) => r.objectionType === type && r.appointmentDate >= bucketDate && r.appointmentDate < bucketEnd
+      ).length;
+    });
+    return point;
+  });
+
+  const series = top3.map((type) => ({
+    key: keyOf(type),
+    label: type,
+    color: TREND_COLORS[type] || 'cyan',
+  }));
+
+  return { series, data };
+}
+
+/**
+ * Filter records by closerId (comma-separated names), objectionType (comma-separated), and date range.
+ */
+function filterRecords(records, filters) {
+  const { dateStart, dateEnd, closerId, objectionType } = filters;
+  const closerList = closerId ? closerId.split(',').map((s) => s.trim()) : [];
+  const typeList = objectionType ? objectionType.split(',').map((s) => s.trim()) : [];
+
+  return records.filter((r) => {
+    if (dateStart && r.appointmentDate < dateStart) return false;
+    if (dateEnd && r.appointmentDate > dateEnd) return false;
+    if (closerList.length > 0 && !closerList.includes(r.closerId)) return false;
+    if (typeList.length > 0 && !typeList.includes(r.objectionType)) return false;
+    return true;
+  });
+}
+
 function getDemoData(tier = 'insight', filters = {}) {
+  const rows = filterRecords(ALL_RECORDS, filters);
+  const total = rows.length;
+  const resolved = rows.filter((r) => r.resolved).length;
+  const unresolved = total - resolved;
+
+  // Unique calls that had objections (approximate using unique dates as proxy)
+  const uniqueCallDates = new Set(rows.map((r) => r.appointmentDate + r.closer));
+  const callsWithObj = uniqueCallDates.size;
+  // Simulate total calls held as ~1.6x calls with objections (not all calls have objections)
+  const callsHeld = Math.max(total, Math.round(callsWithObj * 1.6));
+  const objectionlessCloses = Math.max(0, Math.round(callsHeld * 0.12));
+
+  const closedWithObj = rows.filter((r) => r.callOutcome === 'Closed - Won').length;
+  const lostToObj = rows.filter((r) => r.callOutcome === 'Lost').length;
+
+  // --- Build by-type aggregation ---
+  const typeMap = {};
+  rows.forEach((r) => {
+    if (!typeMap[r.objectionType]) typeMap[r.objectionType] = { total: 0, resolved: 0 };
+    typeMap[r.objectionType].total++;
+    if (r.resolved) typeMap[r.objectionType].resolved++;
+  });
+
+  const byTypeRows = Object.entries(typeMap)
+    .map(([type, d]) => ({ type, total: d.total, resolved: d.resolved, resRate: d.total > 0 ? d.resolved / d.total : 0 }))
+    .sort((a, b) => b.total - a.total);
+
+  // --- Build by-closer aggregation ---
+  const closerMap = {};
+  rows.forEach((r) => {
+    if (!closerMap[r.closer]) closerMap[r.closer] = { total: 0, resolved: 0 };
+    closerMap[r.closer].total++;
+    if (r.resolved) closerMap[r.closer].resolved++;
+  });
+
+  const byCloserRows = Object.entries(closerMap)
+    .map(([closer, d]) => ({ closer, total: d.total, resolved: d.resolved, resRate: d.total > 0 ? d.resolved / d.total : 0 }))
+    .sort((a, b) => b.resRate - a.resRate);
+
   return {
     sections: {
       summary: {
-        callsHeld: { value: 164, label: 'Calls Held', format: 'number' },
-        objectionsFaced: { value: 89, label: 'Objections Faced', format: 'number' },
-        callsWithObjections: { value: 0.524, label: '% Calls w/ Objections', format: 'percent' },
-        avgObjectionsPerCall: { value: 1.4, label: 'Avg Objections / Call', format: 'decimal' },
-        resolvedObjections: { value: 52, label: 'Resolved', format: 'number' },
-        resolutionRate: { value: 0.584, label: 'Resolution Rate', format: 'percent' },
-        objectionlessCloses: { value: 8, label: 'Objectionless Closes', format: 'number' },
-        closedWithObjections: { value: 15, label: 'Closed w/ Objections', format: 'number' },
-        lostToObjections: { value: 7, label: 'Lost to Objections', format: 'number' },
+        callsHeld: { value: callsHeld, label: 'Calls Held', format: 'number', glowColor: 'blue' },
+        objectionsFaced: { value: total, label: 'Objections Faced', format: 'number', glowColor: 'teal' },
+        callsWithObjections: { value: callsHeld > 0 ? callsWithObj / callsHeld : 0, label: '% Calls w/ Objections', format: 'percent', glowColor: 'amber' },
+        avgObjectionsPerCall: { value: callsWithObj > 0 ? total / callsWithObj : 0, label: 'Avg Objections / Call', format: 'decimal', glowColor: 'amber' },
+        resolvedObjections: { value: resolved, label: 'Resolved', format: 'number', glowColor: 'green' },
+        resolutionRate: { value: total > 0 ? resolved / total : 0, label: 'Resolution Rate', format: 'percent', glowColor: 'purple' },
+        objectionlessCloses: { value: objectionlessCloses, label: 'Objectionless Closes', format: 'number', glowColor: 'green' },
+        closedWithObjections: { value: closedWithObj, label: 'Closed w/ Objections', format: 'number', glowColor: 'green' },
+        lostToObjections: { value: lostToObj, label: 'Lost to Objections', format: 'number', glowColor: 'red' },
       },
     },
     charts: {
@@ -92,66 +268,48 @@ function getDemoData(tier = 'insight', filters = {}) {
           { key: 'resolved', label: 'Resolved', color: 'green' },
           { key: 'unresolved', label: 'Unresolved', color: 'red' },
         ],
-        data: [
-          { date: 'Financial', resolved: 12, unresolved: 8 },
-          { date: 'Think About It', resolved: 10, unresolved: 9 },
-          { date: 'Spouse/Partner', resolved: 8, unresolved: 7 },
-          { date: 'Timing', resolved: 7, unresolved: 4 },
-          { date: 'Already Tried', resolved: 6, unresolved: 3 },
-          { date: 'Not Interested', resolved: 5, unresolved: 4 },
-          { date: 'Other', resolved: 4, unresolved: 2 },
-        ],
+        data: byTypeRows.map((d) => ({
+          date: d.type,
+          resolved: d.resolved,
+          unresolved: d.total - d.resolved,
+        })),
       },
       objectionTrends: {
         type: 'line',
         label: 'Top 3 Objections Over Time',
-        series: [
-          { key: 'financial', label: 'Financial', color: 'cyan' },
-          { key: 'thinkAbout', label: 'Think About It', color: 'amber' },
-          { key: 'spouse', label: 'Spouse/Partner', color: 'magenta' },
-        ],
-        data: generateTimeSeries(filters, [
-          { key: 'financial', base: 3, variance: 1.5 },
-          { key: 'thinkAbout', base: 2.5, variance: 1.5 },
-          { key: 'spouse', base: 2, variance: 1 },
-        ]),
+        ...buildTrendFromRecords(rows, filters),
       },
       unresolvedByType: {
         type: 'pie',
         label: 'Unresolved Objections by Type',
-        data: [
-          { label: 'Think About It', value: 9, color: '#FFD93D' },
-          { label: 'Financial', value: 8, color: '#4DD4E8' },
-          { label: 'Spouse/Partner', value: 7, color: '#ff00e5' },
-          { label: 'Timing', value: 4, color: '#B84DFF' },
-          { label: 'Not Interested', value: 4, color: '#FF4D6D' },
-          { label: 'Other', value: 5, color: '#64748b' },
-        ],
+        data: Object.entries(typeMap)
+          .map(([type, d]) => ({
+            label: type,
+            value: d.total - d.resolved,
+            color: TYPE_COLORS[type] || 'muted',
+          }))
+          .filter((d) => d.value > 0)
+          .sort((a, b) => b.value - a.value),
       },
       resolutionByCloser: {
         type: 'bar',
         label: 'Resolution Rate by Closer',
         series: [{ key: 'resRate', label: 'Resolution Rate', color: 'green' }],
-        data: [
-          { date: 'Sarah', resRate: 0.72 },
-          { date: 'Mike', resRate: 0.61 },
-          { date: 'Jessica', resRate: 0.54 },
-          { date: 'Alex', resRate: 0.48 },
-        ],
+        data: byCloserRows.map((d) => ({ date: d.closer, resRate: d.resRate })),
       },
     },
     tables: {
       byType: {
         columns: ['Type', 'Total', 'Resolved', 'Resolution Rate'],
-        rows: [
-          { type: 'Financial', total: 20, resolved: 12, resRate: 0.60 },
-          { type: 'Think About It', total: 19, resolved: 10, resRate: 0.526 },
-          { type: 'Spouse/Partner', total: 15, resolved: 8, resRate: 0.533 },
-          { type: 'Timing', total: 11, resolved: 7, resRate: 0.636 },
-          { type: 'Already Tried', total: 9, resolved: 6, resRate: 0.667 },
-          { type: 'Not Interested', total: 9, resolved: 5, resRate: 0.556 },
-          { type: 'Other', total: 6, resolved: 4, resRate: 0.667 },
-        ],
+        rows: byTypeRows,
+      },
+      byCloser: {
+        columns: ['Closer', 'Objections', 'Resolved', 'Resolution Rate'],
+        rows: byCloserRows,
+      },
+      detail: {
+        columns: ['Objection Type', 'Resolved', 'Closer', 'Call Outcome', 'Date', 'Recording'],
+        rows,
       },
     },
   };

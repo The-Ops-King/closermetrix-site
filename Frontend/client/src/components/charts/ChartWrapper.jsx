@@ -58,6 +58,8 @@ export default function ChartWrapper({
         borderTop: `2px solid ${hexToRgba(accentColor, 0.3)}`,
         borderRadius: `${LAYOUT.cardBorderRadius}px`,
         padding: 3,
+        display: 'flex',
+        flexDirection: 'column',
         transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
         '&:hover': {
           borderColor: 'rgba(255, 255, 255, 0.06)',
@@ -246,7 +248,7 @@ export default function ChartWrapper({
 
       {/* ── SUCCESS STATE ── */}
       {!locked && !loading && !error && !isEmpty && (
-        <Box sx={{ height }}>
+        <Box sx={{ flex: 1, minHeight: height }}>
           {children}
         </Box>
       )}

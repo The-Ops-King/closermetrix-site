@@ -2,20 +2,19 @@
  * OBJECTIONS PAGE — INSIGHT+ ONLY
  *
  * Objection intelligence: counts, resolution rates, per-type and per-closer
- * breakdowns, plus drill-down table.
+ * breakdowns, plus drill-down tables.
  *
- * Sections:
+ * Layout:
  *   1. Summary — 9 scorecards (calls held, objections faced, resolution rate, etc.)
- *   2. Objections by Type — Stacked bar (resolved vs unresolved)
- *   3. Objection Type Summary Table — ObjectionsTable component
- *   4. Objection Trends — Line chart (top 3 over time)
- *   5. Unresolved by Type — Pie chart
- *   6. Resolution Rate by Closer — Bar chart
+ *   2. Row 1 (2-col): Resolved vs Unresolved bar  |  Objection Type Table
+ *   3. Row 2 (2-col): Resolved by Closer Table    |  Top 3 Objections Over Time line
+ *   4. Row 3 (2-col): Unresolved Pie              |  Resolution Rate by Closer bar
+ *   5. Objection Detail Table — full-width with inline filter bar
  *
  * Data: GET /api/dashboard/objections
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { COLORS } from '../../theme/constants';
@@ -28,14 +27,18 @@ import ChartWrapper from '../../components/charts/ChartWrapper';
 import TronLineChart from '../../components/charts/TronLineChart';
 import TronBarChart from '../../components/charts/TronBarChart';
 import TronPieChart from '../../components/charts/TronPieChart';
-
 import ObjectionsTable from '../../components/tables/ObjectionsTable';
+import ObjectionDetailTable from '../../components/tables/ObjectionDetailTable';
 import TierGate from '../../components/TierGate';
 
 export default function ObjectionsPage() {
   const { tier } = useAuth();
   const hasAccess = meetsMinTier(tier, 'insight');
   const { data, isLoading, error } = useMetrics('objections', { enabled: hasAccess });
+
+  // Local state for detail table filters (not linked to FilterContext)
+  const [resolvedFilter, setResolvedFilter] = useState(null);
+  const [outcomeFilter, setOutcomeFilter] = useState([]);
 
   // Fall back to dummy data when the user doesn't have access
   const displayData = hasAccess ? data : DUMMY_OBJECTIONS;
@@ -94,99 +97,121 @@ export default function ObjectionsPage() {
             columns={3}
           />
 
-          {/* Objections by Type — Stacked Bar */}
-          <ChartWrapper
-            title="Objections by Type (Resolved vs Unresolved)"
-            accentColor={COLORS.neon.amber}
-            loading={isLoading}
-            error={error?.message}
-            isEmpty={!charts.objectionsByType?.data?.length}
-            height={280}
+          {/* Row 1: Resolved vs Unresolved bar  |  Objection Type Table */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+              gap: '16px',
+              alignItems: 'stretch',
+            }}
           >
-            <TronBarChart
-              data={charts.objectionsByType?.data || []}
-              series={charts.objectionsByType?.series || []}
+            <ChartWrapper
+              title="Objections by Type (Resolved vs Unresolved)"
+              accentColor={COLORS.neon.amber}
+              loading={isLoading}
+              error={error?.message}
+              isEmpty={!charts.objectionsByType?.data?.length}
               height={280}
-              stacked
-              yAxisFormat="number"
-            />
-          </ChartWrapper>
-
-          {/* Objection Type Summary Table */}
-          <Box>
-            <Box
-              sx={{
-                borderTop: `1px solid ${COLORS.border.subtle}`,
-                marginBottom: '16px',
-                paddingTop: '24px',
-              }}
             >
-              <Typography
-                variant="h5"
-                sx={{
-                  color: COLORS.text.secondary,
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  marginBottom: '16px',
-                }}
-              >
-                Objection Type Breakdown
-              </Typography>
-            </Box>
-            <ObjectionsTable rows={tables.byType?.rows || []} />
+              <TronBarChart
+                data={charts.objectionsByType?.data || []}
+                series={charts.objectionsByType?.series || []}
+                layout="horizontal"
+                stacked
+                yAxisFormat="number"
+              />
+            </ChartWrapper>
+
+            <ObjectionsTable
+              rows={tables.byType?.rows || []}
+              variant="type"
+              title="Objection Type Breakdown"
+              accentColor={COLORS.neon.amber}
+            />
           </Box>
 
-          {/* Objection Trends — Line */}
-          <ChartWrapper
-            title="Top 3 Objections Over Time"
+          {/* Row 2: Resolved by Closer Table  |  Top 3 Objections Over Time */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+              gap: '16px',
+              alignItems: 'stretch',
+            }}
+          >
+            <ObjectionsTable
+              rows={tables.byCloser?.rows || []}
+              variant="closer"
+              title="Resolved by Closer"
+              accentColor={COLORS.neon.cyan}
+            />
+
+            <ChartWrapper
+              title="Top 3 Objections Over Time"
+              accentColor={COLORS.neon.cyan}
+              loading={isLoading}
+              error={error?.message}
+              isEmpty={!charts.objectionTrends?.data?.length}
+              height={280}
+            >
+              <TronLineChart
+                data={charts.objectionTrends?.data || []}
+                series={charts.objectionTrends?.series || []}
+                yAxisFormat="number"
+                showArea={true}
+              />
+            </ChartWrapper>
+          </Box>
+
+          {/* Row 3: Unresolved Pie  |  Resolution Rate by Closer bar — side by side */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+              gap: '16px',
+              alignItems: 'stretch',
+            }}
+          >
+            <ChartWrapper
+              title="Unresolved Objections by Type"
+              accentColor={COLORS.neon.red}
+              loading={isLoading}
+              error={error?.message}
+              isEmpty={!charts.unresolvedByType?.data?.length}
+              height={280}
+            >
+              <TronPieChart
+                data={charts.unresolvedByType?.data || []}
+                height={280}
+              />
+            </ChartWrapper>
+
+            <ChartWrapper
+              title="Resolution Rate by Closer"
+              accentColor={COLORS.neon.green}
+              loading={isLoading}
+              error={error?.message}
+              isEmpty={!charts.resolutionByCloser?.data?.length}
+              height={280}
+            >
+              <TronBarChart
+                data={charts.resolutionByCloser?.data || []}
+                series={charts.resolutionByCloser?.series || []}
+                yAxisFormat="percent"
+              />
+            </ChartWrapper>
+          </Box>
+
+          {/* Objection Detail Table — full-width with inline filters */}
+          <ObjectionDetailTable
+            rows={tables.detail?.rows || []}
             accentColor={COLORS.neon.cyan}
-            loading={isLoading}
-            error={error?.message}
-            isEmpty={!charts.objectionTrends?.data?.length}
-            height={280}
-          >
-            <TronLineChart
-              data={charts.objectionTrends?.data || []}
-              series={charts.objectionTrends?.series || []}
-              height={280}
-              yAxisFormat="number"
-              showArea={true}
-            />
-          </ChartWrapper>
-
-          {/* Unresolved by Type — Pie */}
-          <ChartWrapper
-            title="Unresolved Objections by Type"
-            accentColor={COLORS.neon.red}
-            loading={isLoading}
-            error={error?.message}
-            isEmpty={!charts.unresolvedByType?.data?.length}
-            height={280}
-          >
-            <TronPieChart
-              data={charts.unresolvedByType?.data || []}
-              height={280}
-            />
-          </ChartWrapper>
-
-          {/* Resolution Rate by Closer — Bar */}
-          <ChartWrapper
-            title="Resolution Rate by Closer"
-            accentColor={COLORS.neon.green}
-            loading={isLoading}
-            error={error?.message}
-            isEmpty={!charts.resolutionByCloser?.data?.length}
-            height={280}
-          >
-            <TronBarChart
-              data={charts.resolutionByCloser?.data || []}
-              series={charts.resolutionByCloser?.series || []}
-              height={280}
-              yAxisFormat="percent"
-            />
-          </ChartWrapper>
+            resolvedFilter={resolvedFilter}
+            setResolvedFilter={setResolvedFilter}
+            outcomeFilter={outcomeFilter}
+            setOutcomeFilter={setOutcomeFilter}
+          />
 
           {/* Footer */}
           <Box

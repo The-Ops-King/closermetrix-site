@@ -29,6 +29,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import { COLORS, LAYOUT } from '../../theme/constants';
+import { resolveColor } from '../../utils/colors';
 import Scorecard from './Scorecard';
 import SectionHeader from '../SectionHeader';
 
@@ -96,7 +97,7 @@ export default function ScorecardGrid({
               delta={metric.delta != null ? metric.delta : null}
               deltaLabel={metric.deltaLabel || null}
               desiredDirection={metric.desiredDirection || 'up'}
-              glowColor={metric.glowColor || glowColor}
+              glowColor={metric.glowColor ? resolveColor(metric.glowColor) : glowColor}
               locked={isLocked}
               onClick={isLocked && onLockedClick ? () => onLockedClick(key) : null}
             />

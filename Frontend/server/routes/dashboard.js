@@ -38,6 +38,7 @@ const { getObjectionsData } = require('../db/queries/objections');
 const { getProjectionsData } = require('../db/queries/projections');
 const { getViolationsData } = require('../db/queries/violations');
 const { getAdherenceData } = require('../db/queries/adherence');
+const { getCallExportData } = require('../db/queries/callExport');
 
 const router = express.Router();
 
@@ -238,6 +239,25 @@ router.get('/adherence', async (req, res) => {
   } catch (err) {
     logger.error('Adherence endpoint error', { error: err.message, clientId: req.clientId });
     res.status(500).json({ success: false, error: 'Failed to load adherence data' });
+  }
+});
+
+// ── Call Export (CSV Download — All Tiers) ──────────────────
+
+router.get('/export-calls', async (req, res) => {
+  try {
+    const { dateStart, dateEnd, closerId } = req.query;
+    // Basic tier clients cannot filter by closer
+    const effectiveCloserId = req.tier === 'basic' ? null : closerId;
+    const result = await getCallExportData(
+      req.clientId,
+      { dateStart, dateEnd, closerId: effectiveCloserId },
+      req.tier
+    );
+    res.json({ success: true, data: result });
+  } catch (err) {
+    logger.error('Call export endpoint error', { error: err.message, clientId: req.clientId });
+    res.status(500).json({ success: false, error: 'Failed to export call data' });
   }
 });
 
