@@ -226,7 +226,7 @@ export default function AdminDashboard() {
               <Box
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: '2fr 100px 80px 100px 90px',
+                  gridTemplateColumns: '2fr 1fr 100px 80px 80px 100px 90px',
                   gap: 2,
                   px: 3,
                   py: 1.5,
@@ -238,10 +238,16 @@ export default function AdminDashboard() {
                   Company
                 </Typography>
                 <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', fontSize: '0.65rem' }}>
+                  Client ID
+                </Typography>
+                <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', fontSize: '0.65rem' }}>
                   Tier
                 </Typography>
                 <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', fontSize: '0.65rem' }}>
                   Closers
+                </Typography>
+                <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', fontSize: '0.65rem' }}>
+                  Calls
                 </Typography>
                 <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', fontSize: '0.65rem' }}>
                   Status
@@ -259,7 +265,7 @@ export default function AdminDashboard() {
                     key={client.client_id}
                     sx={{
                       display: 'grid',
-                      gridTemplateColumns: '2fr 100px 80px 100px 90px',
+                      gridTemplateColumns: '2fr 1fr 100px 80px 80px 100px 90px',
                       gap: 2,
                       px: 3,
                       py: 1.5,
@@ -276,12 +282,22 @@ export default function AdminDashboard() {
                       {client.company_name}
                     </Typography>
 
+                    {/* Client ID */}
+                    <Typography sx={{ color: COLORS.text.muted, fontSize: '0.75rem', fontFamily: 'monospace' }}>
+                      {client.client_id}
+                    </Typography>
+
                     {/* Tier Badge */}
                     <TierBadge tier={client.plan_tier} />
 
                     {/* Closer Count */}
                     <Typography sx={{ color: COLORS.text.secondary, fontSize: '0.9rem' }}>
                       {client.closer_count ?? '—'}
+                    </Typography>
+
+                    {/* Total Calls */}
+                    <Typography sx={{ color: COLORS.text.secondary, fontSize: '0.9rem' }}>
+                      {client.total_calls != null ? Number(client.total_calls).toLocaleString() : '—'}
                     </Typography>
 
                     {/* Status */}

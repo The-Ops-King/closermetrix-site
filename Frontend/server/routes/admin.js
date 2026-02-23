@@ -63,6 +63,8 @@ router.get('/clients', async (req, res) => {
       `SELECT c.client_id, c.company_name, c.plan_tier,
         (SELECT COUNT(*) FROM ${bq.table('Closers')} cl
          WHERE cl.client_id = c.client_id AND LOWER(cl.status) = 'active') as closer_count,
+        (SELECT COUNT(*) FROM ${bq.table('Calls')} ca
+         WHERE ca.client_id = c.client_id) as total_calls,
         c.status
        FROM ${bq.table('Clients')} c
        ORDER BY c.company_name`
@@ -263,9 +265,9 @@ router.get('/overview', async (req, res) => {
         `SELECT
           COUNT(DISTINCT client_id) as total_clients,
           COUNTIF(LOWER(status) = 'active') as active_clients,
-          COUNTIF(plan_tier = 'basic') as basic_count,
-          COUNTIF(plan_tier = 'insight') as insight_count,
-          COUNTIF(plan_tier = 'executive') as executive_count
+          COUNTIF(LOWER(plan_tier) = 'basic') as basic_count,
+          COUNTIF(LOWER(plan_tier) = 'insight') as insight_count,
+          COUNTIF(LOWER(plan_tier) = 'executive') as executive_count
          FROM ${bq.table('Clients')}`
       ),
       bq.runAdminQuery(

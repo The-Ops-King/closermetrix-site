@@ -88,6 +88,16 @@ const fieldValueSx = {
   wordBreak: 'break-word',
 };
 
+/** Safely convert any value to a renderable string (handles BQ Timestamps, JSON objects, etc.) */
+function displayValue(val) {
+  if (val === null || val === undefined || val === '') return null;
+  if (typeof val === 'string') return val;
+  if (typeof val === 'number' || typeof val === 'boolean') return String(val);
+  if (val instanceof Date) return val.toISOString();
+  if (typeof val === 'object' && val.value) return String(val.value); // BQ Timestamp {value: ...}
+  try { return JSON.stringify(val); } catch { return String(val); }
+}
+
 // ── Field Definitions ─────────────────────────────────────────
 
 const CLIENT_FIELDS = [
@@ -470,7 +480,7 @@ function ClientsTab({ selectedClientId, executeRequest, onClientCreated }) {
     if (!clientDetail) return;
     const form = {};
     CLIENT_FIELDS.forEach((f) => {
-      form[f.key] = clientDetail[f.key] ?? '';
+      form[f.key] = displayValue(clientDetail[f.key]) ?? '';
     });
     setEditForm(form);
     setViewMode('edit');
@@ -659,7 +669,7 @@ function ClientsTab({ selectedClientId, executeRequest, onClientCreated }) {
             <Box key={f.key} sx={{ minWidth: 150 }}>
               <Typography sx={fieldLabelSx}>{f.label}</Typography>
               <Typography sx={{ ...fieldValueSx, fontSize: '0.75rem', color: COLORS.text.muted, fontFamily: 'monospace' }}>
-                {clientDetail[f.key] || '—'}
+                {displayValue(clientDetail[f.key]) || '—'}
               </Typography>
             </Box>
           ))}
@@ -712,8 +722,9 @@ function ClientsTab({ selectedClientId, executeRequest, onClientCreated }) {
                 // ── VIEW MODE: read-only ──
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
                   {fields.map((f) => {
-                    const val = clientDetail[f.key];
-                    const isEmpty = val === null || val === undefined || val === '';
+                    const rawVal = clientDetail[f.key];
+                    const val = displayValue(rawVal);
+                    const isEmpty = val === null;
                     return (
                       <Box key={f.key} sx={{ minWidth: f.multiline ? '100%' : 160, maxWidth: f.multiline ? '100%' : 280 }}>
                         <Typography sx={fieldLabelSx}>{f.label}</Typography>
@@ -722,7 +733,7 @@ function ClientsTab({ selectedClientId, executeRequest, onClientCreated }) {
                             sx={{
                               p: 1.5,
                               borderRadius: 1,
-                              backgroundColor: COLORS.bg.primary,
+                              backgroundColor: COLORS.bg.tertiary,
                               border: `1px solid ${COLORS.border.subtle}`,
                               maxHeight: 120,
                               overflow: 'auto',
@@ -734,7 +745,7 @@ function ClientsTab({ selectedClientId, executeRequest, onClientCreated }) {
                           </Box>
                         ) : (
                           <Typography sx={{ ...fieldValueSx, color: isEmpty ? COLORS.text.muted : COLORS.text.primary }}>
-                            {isEmpty ? '—' : String(val)}
+                            {isEmpty ? '—' : val}
                           </Typography>
                         )}
                       </Box>
@@ -976,7 +987,7 @@ function ClosersTab({ selectedClientId, executeRequest }) {
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: '1.5fr 2fr 80px 120px',
+                gridTemplateColumns: '1.5fr 1fr 2fr 80px 120px',
                 gap: 2,
                 px: 2,
                 py: 1,
@@ -984,7 +995,7 @@ function ClosersTab({ selectedClientId, executeRequest }) {
                 backgroundColor: COLORS.bg.tertiary,
               }}
             >
-              {['Name', 'Email', 'Status', 'Actions'].map((h) => (
+              {['Name', 'Closer ID', 'Email', 'Status', 'Actions'].map((h) => (
                 <Typography
                   key={h}
                   variant="caption"
@@ -1002,7 +1013,7 @@ function ClosersTab({ selectedClientId, executeRequest }) {
                   key={closer.closer_id}
                   sx={{
                     display: 'grid',
-                    gridTemplateColumns: '1.5fr 2fr 80px 120px',
+                    gridTemplateColumns: '1.5fr 1fr 2fr 80px 120px',
                     gap: 2,
                     px: 2,
                     py: 1,
@@ -1015,6 +1026,7 @@ function ClosersTab({ selectedClientId, executeRequest }) {
                   }}
                 >
                   <Typography sx={{ color: COLORS.text.primary, fontSize: '0.85rem' }}>{closer.name}</Typography>
+                  <Typography sx={{ color: COLORS.text.muted, fontSize: '0.75rem', fontFamily: 'monospace' }}>{closer.closer_id || '—'}</Typography>
                   <Typography sx={{ color: COLORS.text.secondary, fontSize: '0.8rem' }}>{closer.work_email || '—'}</Typography>
                   <Typography
                     sx={{
