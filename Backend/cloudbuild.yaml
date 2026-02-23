@@ -67,6 +67,9 @@ steps:
       - '--set-env-vars'
       - 'GCP_PROJECT_ID=closer-automation,BQ_DATASET=CloserAutomation,NODE_ENV=production,BASE_URL=https://api.closermetrix.com,AI_MODEL=claude-sonnet-4-5-20250929,AI_MAX_TOKENS=8000,AI_INPUT_COST_PER_MILLION=3.00,AI_OUTPUT_COST_PER_MILLION=15.00,TRANSCRIPT_TIMEOUT_MINUTES=120,GHOST_CHECK_INTERVAL_MINUTES=30,FATHOM_POLL_INTERVALS=30:60:120:300:600:900,GCP_LOCATION=us-central1,CLOUD_TASKS_QUEUE=closermetrix-processing'
 
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/closermetrix/closermetrix-api:$SHORT_SHA'
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/closermetrix/closermetrix-api:latest'

@@ -66,6 +66,9 @@ steps:
       - '--set-env-vars'
       - 'NODE_ENV=production,GCP_PROJECT_ID=closer-automation,BQ_DATASET=CloserAutomation,BACKEND_API_URL=https://api.closermetrix.com'
 
+options:
+  logging: CLOUD_LOGGING_ONLY
+
 images:
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/closermetrix/closermetrix-dashboard:$SHORT_SHA'
   - 'us-central1-docker.pkg.dev/$PROJECT_ID/closermetrix/closermetrix-dashboard:latest'
