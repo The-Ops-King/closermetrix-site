@@ -222,21 +222,25 @@ async function generateToken(clientId, tokenType = 'client', label = '', options
   }
 
   try {
+    // Build params dynamically — BigQuery Node.js client cannot infer types
+    // for null values, so we only include non-null params and use NULL literals
+    // in the SQL for any missing optional fields.
+    const params = { tokenId, clientId, tokenType };
+    const hasLabel = !!(label);
+    const hasPartnerId = !!(options.partnerId);
+    const hasAssignedClientIds = !!(options.assignedClientIds);
+    const hasExpiresAt = !!(options.expiresAt);
+
+    if (hasLabel) params.label = label;
+    if (hasPartnerId) params.partnerId = options.partnerId;
+    if (hasAssignedClientIds) params.assignedClientIds = JSON.stringify(options.assignedClientIds);
+    if (hasExpiresAt) params.expiresAt = options.expiresAt;
+
     await bq.runAdminQuery(
       `INSERT INTO ${bq.table('AccessTokens')}
        (token_id, client_id, token_type, label, partner_id, assigned_client_ids, expires_at, created_by)
-       VALUES (@tokenId, @clientId, @tokenType, @label, @partnerId, @assignedClientIds, @expiresAt, 'admin')`,
-      {
-        tokenId,
-        clientId,
-        tokenType,
-        label: label || null,
-        partnerId: options.partnerId || null,
-        assignedClientIds: options.assignedClientIds
-          ? JSON.stringify(options.assignedClientIds)
-          : null,
-        expiresAt: options.expiresAt || null,
-      }
+       VALUES (@tokenId, @clientId, @tokenType, ${hasLabel ? '@label' : 'NULL'}, ${hasPartnerId ? '@partnerId' : 'NULL'}, ${hasAssignedClientIds ? '@assignedClientIds' : 'NULL'}, ${hasExpiresAt ? '@expiresAt' : 'NULL'}, 'admin')`,
+      params
     );
 
     logger.info('Token generated', { tokenId: tokenId.slice(0, 8), clientId, tokenType });
