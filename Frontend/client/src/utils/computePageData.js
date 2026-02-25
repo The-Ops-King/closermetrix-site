@@ -855,6 +855,7 @@ function computeAttendance(calls, granularity, prev) {
     });
   }
   showRatePerCloser.sort((a, b) => b.showRate - a.showRate);
+  attendancePerCloser.sort((a, b) => (b.show + b.noShow) - (a.show + a.noShow));
 
   return {
     sections,
