@@ -83,10 +83,9 @@ async function queryBigQuery(clientId, filters, tier) {
                   COUNT(CASE WHEN calls_call_type = 'Follow Up' THEN 1 END)) as followup_show_rate,
       -- Not taken breakdown
       COUNT(CASE WHEN calls_attendance != 'Show' THEN 1 END) as not_taken,
-      COUNT(CASE WHEN calls_attendance = 'Ghosted' THEN 1 END) as ghosted,
-      COUNT(CASE WHEN calls_attendance = 'Canceled' THEN 1 END) as cancelled,
+      COUNT(CASE WHEN calls_attendance LIKE '%Ghost%' OR calls_attendance LIKE '%No Show%' THEN 1 END) as ghosted,
+      COUNT(CASE WHEN calls_attendance IN ('Canceled', 'Cancelled') THEN 1 END) as cancelled,
       COUNT(CASE WHEN calls_attendance = 'Rescheduled' THEN 1 END) as rescheduled,
-      COUNT(CASE WHEN calls_attendance = 'Not Pitched' THEN 1 END) as not_pitched,
       COUNT(CASE WHEN calls_attendance = 'Overbooked' THEN 1 END) as overbooked,
       -- Active follow-ups (follow-up scheduled, not yet held, outcome is null or pending)
       COUNT(CASE WHEN calls_call_type = 'Follow Up' AND calls_attendance IS NULL THEN 1 END) as active_followup,
@@ -105,8 +104,8 @@ async function queryBigQuery(clientId, filters, tier) {
       ${tb} as bucket,
       COUNT(*) as scheduled,
       COUNT(CASE WHEN calls_attendance = 'Show' THEN 1 END) as held,
-      COUNT(CASE WHEN calls_attendance = 'Ghosted' THEN 1 END) as ghosted,
-      COUNT(CASE WHEN calls_attendance = 'Canceled' THEN 1 END) as cancelled,
+      COUNT(CASE WHEN calls_attendance LIKE '%Ghost%' OR calls_attendance LIKE '%No Show%' THEN 1 END) as ghosted,
+      COUNT(CASE WHEN calls_attendance IN ('Canceled', 'Cancelled') THEN 1 END) as cancelled,
       COUNT(CASE WHEN calls_attendance = 'Rescheduled' THEN 1 END) as rescheduled,
       SAFE_DIVIDE(COUNT(CASE WHEN calls_call_type = 'First Call' AND calls_attendance = 'Show' THEN 1 END),
                   COUNT(CASE WHEN calls_call_type = 'First Call' THEN 1 END)) as first_call_rate,
@@ -122,10 +121,9 @@ async function queryBigQuery(clientId, filters, tier) {
       closers_name as closer_name,
       COUNT(*) as total,
       COUNT(CASE WHEN calls_attendance = 'Show' THEN 1 END) as show_count,
-      COUNT(CASE WHEN calls_attendance = 'Ghosted' THEN 1 END) as ghosted,
-      COUNT(CASE WHEN calls_attendance = 'Canceled' THEN 1 END) as cancelled,
+      COUNT(CASE WHEN calls_attendance LIKE '%Ghost%' OR calls_attendance LIKE '%No Show%' THEN 1 END) as ghosted,
+      COUNT(CASE WHEN calls_attendance IN ('Canceled', 'Cancelled') THEN 1 END) as cancelled,
       COUNT(CASE WHEN calls_attendance = 'Rescheduled' THEN 1 END) as rescheduled,
-      COUNT(CASE WHEN calls_attendance = 'Not Pitched' THEN 1 END) as not_pitched,
       SAFE_DIVIDE(COUNT(CASE WHEN calls_attendance = 'Show' THEN 1 END), COUNT(*)) as show_pct
     FROM ${VIEW} ${where}
     GROUP BY closers_name ORDER BY show_pct DESC` : null;
@@ -228,7 +226,6 @@ async function queryBigQuery(clientId, filters, tier) {
           { label: 'Ghosted', value: ghosted, color: 'amber' },
           { label: 'Rescheduled', value: rescheduled, color: 'purple' },
           { label: 'Overbooked', value: num(sc.overbooked), color: 'blue' },
-          { label: 'Not Pitched', value: num(sc.not_pitched), color: 'red' },
         ].filter(d => d.value > 0),
       },
       notTakenBreakdown: {
@@ -244,7 +241,6 @@ async function queryBigQuery(clientId, filters, tier) {
         type: 'pie', label: 'Not Taken Reason',
         data: [
           { label: 'Ghosted - No Show', value: ghosted, color: 'amber' },
-          { label: 'Not Pitched', value: num(sc.not_pitched), color: 'red' },
           { label: 'Overbooked', value: num(sc.overbooked), color: 'purple' },
           { label: 'Rescheduled', value: rescheduled, color: 'blue' },
         ].filter(d => d.value > 0),
@@ -274,7 +270,6 @@ async function queryBigQuery(clientId, filters, tier) {
         { key: 'ghosted', label: 'Ghosted', color: 'amber' },
         { key: 'cancelled', label: 'Cancelled', color: 'red' },
         { key: 'rescheduled', label: 'Rescheduled', color: 'purple' },
-        { key: 'notPitched', label: 'Not Pitched', color: 'magenta' },
       ],
       data: cl.map(r => ({
         label: r.closer_name,
@@ -282,7 +277,6 @@ async function queryBigQuery(clientId, filters, tier) {
         ghosted: num(r.ghosted),
         cancelled: num(r.cancelled),
         rescheduled: num(r.rescheduled),
-        notPitched: num(r.not_pitched),
       })).sort((a, b) => (b.show + b.ghosted + b.cancelled) - (a.show + a.ghosted + a.cancelled)),
     };
   }
@@ -384,7 +378,6 @@ function getDemoData(tier = 'insight', filters = {}) {
           { label: 'Ghosted', value: 1037, color: NEON_HEX.amber },
           { label: 'Rescheduled', value: 31, color: NEON_HEX.purple },
           { label: 'Overbooked', value: 120, color: NEON_HEX.blue },
-          { label: 'Not Pitched', value: 80, color: NEON_HEX.red },
         ],
       },
 
@@ -410,7 +403,6 @@ function getDemoData(tier = 'insight', filters = {}) {
         label: 'Not Taken Reason',
         data: [
           { label: 'Ghosted - No Show', value: 1037, color: NEON_HEX.amber },
-          { label: 'Not Pitched',       value: 80,   color: NEON_HEX.red },
           { label: 'Overbooked',        value: 60,   color: NEON_HEX.purple },
           { label: 'Rescheduled',       value: 31,   color: NEON_HEX.blue },
         ],
@@ -455,19 +447,17 @@ function getDemoData(tier = 'insight', filters = {}) {
         { key: 'ghosted', label: 'Ghosted', color: 'amber' },
         { key: 'cancelled', label: 'Cancelled', color: 'red' },
         { key: 'rescheduled', label: 'Rescheduled', color: NEON_HEX.purple },
-        { key: 'notPitched', label: 'Not Pitched', color: 'magenta' },
       ],
       data: closerNames.map((name) => {
         const total = 300 + Math.floor(Math.random() * 500);
         const show = Math.floor(total * (0.55 + Math.random() * 0.15));
         const ghosted = Math.floor(total * (0.15 + Math.random() * 0.10));
         const cancelled = Math.floor(total * (0.03 + Math.random() * 0.04));
-        const rescheduled = Math.floor(total * (0.01 + Math.random() * 0.02));
-        const notPitched = total - show - ghosted - cancelled - rescheduled;
-        return { label: name, show, ghosted, cancelled, rescheduled, notPitched: Math.max(0, notPitched) };
+        const rescheduled = total - show - ghosted - cancelled;
+        return { label: name, show, ghosted, cancelled, rescheduled: Math.max(0, rescheduled) };
       }).sort((a, b) => {
-        const totalA = a.show + a.ghosted + a.cancelled + a.rescheduled + a.notPitched;
-        const totalB = b.show + b.ghosted + b.cancelled + b.rescheduled + b.notPitched;
+        const totalA = a.show + a.ghosted + a.cancelled + a.rescheduled;
+        const totalB = b.show + b.ghosted + b.cancelled + b.rescheduled;
         return totalB - totalA;
       }),
     };

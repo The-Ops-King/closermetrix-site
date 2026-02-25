@@ -47,7 +47,7 @@ const ATTENDANCE_CHART_CONFIG = [
   { value: 'Ghosted',     label: 'Ghosted',     color: 'amber' },
   { value: 'Rescheduled', label: 'Rescheduled', color: 'purple' },
   { value: 'Overbooked',  label: 'Overbooked',  color: 'blue' },
-  { value: 'Not Pitched', label: 'Not Pitched', color: 'red' },
+  // NOTE: 'Not Pitched' is a call outcome, not an attendance value
 ];
 
 /** Not-taken breakdown bar chart series (subset of attendance) */

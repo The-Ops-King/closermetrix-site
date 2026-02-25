@@ -149,8 +149,8 @@ function monthStart(dateStr) {
 /**
  * Auto-select chart granularity based on the date range span.
  * Keeps charts readable: daily for short ranges, monthly for long ones.
- *   ≤14 days  → daily
- *   15-90 days → weekly
+ *   ≤31 days  → daily  (covers "This Month" and "Last 30 Days")
+ *   32-90 days → weekly
  *   >90 days  → monthly
  */
 function autoGranularity(explicit, dateStart, dateEnd) {
@@ -158,7 +158,7 @@ function autoGranularity(explicit, dateStart, dateEnd) {
   if (!dateStart || !dateEnd) return 'weekly';
   const ms = new Date(dateEnd) - new Date(dateStart);
   const days = Math.round(ms / 86400000);
-  if (days <= 14) return 'daily';
+  if (days <= 31) return 'daily';
   if (days <= 90) return 'weekly';
   return 'monthly';
 }
@@ -571,7 +571,10 @@ function computeFinancial(calls, granularity, prev) {
       avgDealRevenue: m('Avg Revenue Per Deal', round(sd(closedRevenue, closed.length)), 'currency', 'green'),
       avgCashPerDeal: m('Avg Cash Per Deal', round(sd(closedCash, closed.length)), 'currency', 'teal'),
       pifPct: m('% PIFs', (() => {
-        const pifCount = revenueDeals.filter(c => (c.paymentPlan || '').toLowerCase() === 'full').length;
+        const pifCount = revenueDeals.filter(c => {
+          const pp = (c.paymentPlan || '').toLowerCase().replace(/[-_]/g, ' ');
+          return pp.includes('paid in full') || pp.includes('pay in full') || pp === 'pif';
+        }).length;
         return round(sd(pifCount, revenueDeals.length), 3);
       })(), 'percent', 'amber'),
       refundCount: m('# of Refunds', 0, 'number', 'red'),

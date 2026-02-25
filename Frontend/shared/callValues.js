@@ -57,10 +57,13 @@ const ALL_CALL_OUTCOMES = [
 const ATTENDANCE = {
   SHOW: 'Show',
   GHOSTED: 'Ghosted',
+  GHOSTED_NO_SHOW: 'Ghosted - No Show',  // Most common variant in BQ data
   CANCELED: 'Canceled',
+  CANCELLED: 'Cancelled',                 // Alternate spelling in BQ data
   RESCHEDULED: 'Rescheduled',
-  NOT_PITCHED: 'Not Pitched',
   OVERBOOKED: 'Overbooked',
+  // NOTE: 'Not Pitched' is a call OUTCOME, not an attendance value.
+  // It lives in OUTCOMES.NOT_PITCHED. Do not add it here.
 };
 
 /**
