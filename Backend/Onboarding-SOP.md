@@ -13,7 +13,7 @@ Step-by-step guide for onboarding new clients and closers. Follow in order.
 3. Their offer name and price
 4. Filter words — the words that appear in their sales call calendar event titles (e.g. "strategy", "discovery", "sales call"). Comma-separated.
 5. Their timezone (e.g. "America/New_York")
-6. Plan tier: starter, insight, growth, or enterprise
+6. Plan tier: basic, insight, or executive
 7. (Optional) Their sales script, AI prompt customizations, common objections, DQ criteria
 
 ### What you do

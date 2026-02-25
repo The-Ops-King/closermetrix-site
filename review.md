@@ -143,7 +143,7 @@ These formulas are referenced throughout all pages:
 | % Collected | percent | `totalCash / totalRevenue` | purple |
 | # of Refunds | number | `COUNT(refunds)` | red |
 | Avg Cash Per Deal | currency | `closedCash / closedDeals.length` | teal |
-| % PIFs | percent | `COUNT(paymentPlanOffered === 'full') / revenueDeals.length` | amber |
+| % PIFs | percent | `COUNT(paymentPlan matches 'paid in full', 'pay in full', or 'pif') / revenueDeals.length` | amber |
 | $ of Refunds | currency | `SUM(refundAmount)` | red |
 
 *All scorecards include deltas.*
@@ -599,8 +599,8 @@ Read-only list of assigned clients. No scorecards or charts of its own — click
 
 | Date Range Span | Granularity |
 |---|---|
-| ≤14 days | Daily |
-| 15–90 days | Weekly |
+| ≤31 days | Daily |
+| 32–90 days | Weekly |
 | >90 days | Monthly |
 
 ---
