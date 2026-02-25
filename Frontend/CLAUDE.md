@@ -31,6 +31,12 @@ cd Frontend/client && nohup npm run dev > /tmp/closermetrix-vite.log 2>&1 &
 
 ---
 
+## REVIEW.MD — KEEP THIS UPDATED
+
+The file `review.md` at the project root is a complete reference of every page, scorecard, chart, table, formula, and color in the dashboard. **Whenever you change a metric formula, add/remove a scorecard, change a color, rename a label, add a new data field, or modify chart behavior, update `review.md` to match.** This file is Tyler's single reference for what the dashboard actually does — if it's wrong, he can't review the product accurately.
+
+---
+
 ## TABLE OF CONTENTS
 
 1. [Architecture Overview](#1-architecture-overview)
