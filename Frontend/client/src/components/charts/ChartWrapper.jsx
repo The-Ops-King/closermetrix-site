@@ -258,7 +258,7 @@ export default function ChartWrapper({
 
       {/* ── SUCCESS STATE ── */}
       {!locked && !loading && !error && !isEmpty && (
-        <Box sx={{ flex: 1, minHeight: height }}>
+        <Box sx={{ flex: 1, height, overflow: 'hidden' }}>
           {children}
         </Box>
       )}

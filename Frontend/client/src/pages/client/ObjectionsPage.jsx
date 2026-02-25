@@ -14,7 +14,7 @@
  * Data: GET /api/dashboard/objections
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { COLORS } from '../../theme/constants';
@@ -31,6 +31,7 @@ import TronPieChart from '../../components/charts/TronPieChart';
 import ObjectionsTable from '../../components/tables/ObjectionsTable';
 import ObjectionDetailTable from '../../components/tables/ObjectionDetailTable';
 import TierGate from '../../components/TierGate';
+import useAnimatedValue from '../../hooks/useAnimatedValue';
 
 export default function ObjectionsPage() {
   const { tier } = useAuth();
@@ -47,6 +48,20 @@ export default function ObjectionsPage() {
   const sections = displayData?.sections || {};
   const charts = displayData?.charts || {};
   const tables = displayData?.tables || {};
+
+  // Dynamic heights for Row 1 (bar chart + type table) based on data count
+  const typeChartTarget = useMemo(() => {
+    const count = charts.objectionsByType?.data?.length || 0;
+    return Math.max(200, 100 + count * 40);
+  }, [charts.objectionsByType?.data?.length]);
+  const typeChartHeight = useAnimatedValue(typeChartTarget);
+
+  // Dynamic heights for Row 2 (closer table + trend chart)
+  const closerRowTarget = useMemo(() => {
+    const count = tables.byCloser?.rows?.length || 0;
+    return Math.max(280, 100 + count * 40);
+  }, [tables.byCloser?.rows?.length]);
+  const closerRowHeight = useAnimatedValue(closerRowTarget);
 
   // Push available objection types into FilterContext for the dynamic dropdown
   useEffect(() => {
@@ -122,7 +137,7 @@ export default function ObjectionsPage() {
               loading={isLoading}
               error={error?.message}
               isEmpty={!charts.objectionsByType?.data?.length}
-              height={280}
+              height={typeChartHeight}
             >
               <TronBarChart
                 data={charts.objectionsByType?.data || []}
@@ -130,6 +145,7 @@ export default function ObjectionsPage() {
                 layout="horizontal"
                 stacked
                 yAxisFormat="number"
+                height={typeChartHeight}
               />
             </ChartWrapper>
 
@@ -163,7 +179,7 @@ export default function ObjectionsPage() {
               loading={isLoading}
               error={error?.message}
               isEmpty={!charts.objectionTrends?.data?.length}
-              height={280}
+              height={closerRowHeight}
             >
               <TronLineChart
                 data={charts.objectionTrends?.data || []}
