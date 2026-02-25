@@ -11,29 +11,61 @@
  *   children: React.ReactNode — the page content
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import { COLORS } from '../../theme/constants';
+import Drawer from '@mui/material/Drawer';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import { COLORS, LAYOUT } from '../../theme/constants';
 import Sidebar from './Sidebar';
 import TopBar from './TopBar';
 
 export default function DashboardShell({ tier, companyName, basePath, mode, children }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
+  const handleNavigate = () => setMobileOpen(false);
+
   return (
     <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden', backgroundColor: COLORS.bg.primary }}>
-      {/* Sidebar — fixed left */}
-      <Sidebar tier={tier} basePath={basePath} mode={mode} />
+      {/* Sidebar — fixed on desktop, temporary drawer on mobile */}
+      {isMobile ? (
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            '& .MuiDrawer-paper': {
+              width: LAYOUT.sidebarWidth,
+              backgroundColor: COLORS.bg.tertiary,
+              borderRight: `1px solid ${COLORS.border.subtle}`,
+            },
+          }}
+        >
+          <Sidebar tier={tier} basePath={basePath} mode={mode} onNavigate={handleNavigate} />
+        </Drawer>
+      ) : (
+        <Sidebar tier={tier} basePath={basePath} mode={mode} />
+      )}
 
       {/* Main content area — fills remaining width */}
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         {/* Top bar with company name, tier badge, filters */}
-        <TopBar companyName={companyName} tier={tier} />
+        <TopBar
+          companyName={companyName}
+          tier={tier}
+          onMenuClick={isMobile ? handleDrawerToggle : undefined}
+        />
 
         {/* Scrollable content */}
         <Box
           sx={{
             flex: 1,
             overflow: 'auto',
-            p: 3,
+            p: { xs: 1.5, sm: 2, md: 3 },
           }}
         >
           {children}

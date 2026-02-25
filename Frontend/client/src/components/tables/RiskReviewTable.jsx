@@ -279,6 +279,7 @@ export default function RiskReviewTable({ rows }) {
             sx={{
               width: '100%',
               overflowX: 'auto',
+              WebkitOverflowScrolling: 'touch',
               borderRadius: 1,
               border: `1px solid ${COLORS.border.subtle}`,
             }}
@@ -287,6 +288,7 @@ export default function RiskReviewTable({ rows }) {
               component="table"
               sx={{
                 width: '100%',
+                minWidth: 900,
                 borderCollapse: 'collapse',
                 /* --- Header cells --- */
                 '& th': {

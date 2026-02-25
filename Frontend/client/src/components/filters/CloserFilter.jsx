@@ -69,14 +69,14 @@ export default function CloserFilter({ disabled = false }) {
   const hasSelection = closerIds.length > 0;
 
   return (
-    <FormControl size="small" sx={{ minWidth: 180, maxWidth: 320 }}>
+    <FormControl size="small" sx={{ minWidth: { xs: 160, md: 180 }, maxWidth: 320 }}>
       <Select
         multiple
         value={closerIds}
         onChange={(e) => setCloserIds(typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
         renderValue={(selected) => {
           if (!selected || selected.length === 0) {
-            return <em style={{ color: COLORS.text.secondary }}>All Closers</em>;
+            return <em style={{ color: COLORS.text.secondary, fontSize: 'inherit' }}>All Closers</em>;
           }
           return (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -121,6 +121,8 @@ export default function CloserFilter({ disabled = false }) {
         sx={{
           color: COLORS.text.primary,
           backgroundColor: COLORS.bg.secondary,
+          fontSize: { xs: '0.9rem', md: '0.8125rem' },
+          minHeight: { xs: 38, md: 'auto' },
           '& .MuiOutlinedInput-notchedOutline': {
             borderColor: hasSelection ? COLORS.neon.cyan : COLORS.border.default,
           },

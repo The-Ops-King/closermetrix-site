@@ -31,7 +31,9 @@ export default function SectionHeader({ title, color = COLORS.neon.cyan, size = 
       <Typography
         sx={{
           color: COLORS.text.primary,
-          fontSize: isSm ? '1rem' : '1.1rem',
+          fontSize: isSm
+            ? { xs: '1.05rem', md: '1rem' }
+            : { xs: '1.15rem', md: '1.1rem' },
           fontWeight: 600,
           letterSpacing: isSm ? '0.03em' : '0.05em',
           textTransform: isSm ? 'none' : 'uppercase',

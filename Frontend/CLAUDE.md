@@ -64,6 +64,19 @@ The ONLY acceptable use of dummy data is for **tier-gate blur previews** (e.g., 
 
 ---
 
+## MOBILE RESPONSIVE — LAYOUT GUIDELINES
+
+The dashboard must be fully usable on mobile devices. Follow these rules:
+
+- **Scorecards**: 2 per row (each 50% width) on mobile. On desktop, keep the existing 3-column grid.
+- **Charts**: Full width (100%) on mobile. No side-by-side chart grids on small screens.
+- **Tables**: Full width, horizontally scrollable if needed.
+- **Sidebar navigation**: Collapses to a hamburger menu or bottom nav on mobile.
+- **Filters (TopBar)**: Stack vertically or collapse into a filter drawer on mobile.
+- **General**: Every 2-column grid layout (`gridTemplateColumns: '1fr 1fr'`) should become single-column on mobile via responsive breakpoints (`xs: '1fr', md: '1fr 1fr'`).
+
+---
+
 ## REVIEW.MD — KEEP THIS UPDATED
 
 The file `review.md` at the project root is a complete reference of every page, scorecard, chart, table, formula, and color in the dashboard. **Whenever you change a metric formula, add/remove a scorecard, change a color, rename a label, add a new data field, or modify chart behavior, update `review.md` to match.** This file is Tyler's single reference for what the dashboard actually does — if it's wrong, he can't review the product accurately.

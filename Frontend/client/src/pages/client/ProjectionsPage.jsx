@@ -178,24 +178,24 @@ function ProjCol({ title, toggleChecked, onToggle, toggleOn, toggleOff, sub, dat
         </Typography>
       </Box>
 
-      {/* Projection Cards -- 3 across + 2 across */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1, mb: 0.75 }}>
+      {/* Projection Cards -- 3 across (2 on mobile) + 2 across */}
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)' }, gap: 1, mb: 0.75 }}>
         <Scorecard label="Calls Scheduled" value={data.s} format="number" glowColor={COLORS.neon.cyan} />
         <Scorecard label="Calls Held" value={data.h} format="number" glowColor={COLORS.neon.cyan} />
         <Scorecard label="Projected Closes" value={data.c} format="number" glowColor={COLORS.neon.green} />
       </Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, mb: 0.75 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1, mb: 0.75 }}>
         <Scorecard label="Projected Revenue" value={data.r} format="currency" glowColor={COLORS.neon.amber} />
         <Scorecard label="Projected Cash" value={data.ca} format="currency" glowColor={COLORS.neon.amber} />
       </Box>
 
       {/* Delta indicators -- show impact of slider adjustments */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 0.75, mb: 0.5 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)' }, gap: 0.75, mb: 0.5 }}>
         <DeltaIndicator value={delta.s} label={`sched / ${period}`} />
         <DeltaIndicator value={delta.h} label={`held / ${period}`} />
         <DeltaIndicator value={delta.c} label={`closes / ${period}`} />
       </Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0.75 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 0.75 }}>
         <DeltaIndicator value={delta.r} label={`rev / ${period}`} isDollar />
         <DeltaIndicator value={delta.ca} label={`cash / ${period}`} isDollar />
       </Box>
@@ -561,7 +561,7 @@ export default function ProjectionsPage() {
           </Box>
 
           {/* Monthly aggregate metrics -- 3 across */}
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 1.25 }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)' }, gap: 1.25 }}>
             <Scorecard label="Monthly Revenue" value={b.currentRevenue} format="currency" glowColor={COLORS.neon.amber} />
             <Scorecard label="Monthly Cash" value={b.currentCash} format="currency" glowColor={COLORS.neon.amber} />
             <Scorecard label="Monthly Closes" value={b.currentCloses} format="number" glowColor={COLORS.neon.green} />

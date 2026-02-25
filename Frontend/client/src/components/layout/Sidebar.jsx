@@ -19,7 +19,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { COLORS, LAYOUT } from '../../theme/constants';
 import { NAV_ITEMS, meetsMinTier } from '../../utils/tierConfig';
 
-export default function Sidebar({ tier, basePath }) {
+export default function Sidebar({ tier, basePath, onNavigate }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -81,7 +81,7 @@ export default function Sidebar({ tier, basePath }) {
           return (
             <ListItemButton
               key={item.key}
-              onClick={() => navigate(`${basePath}${item.path}`)}
+              onClick={() => { navigate(`${basePath}${item.path}`); onNavigate?.(); }}
               sx={{
                 borderRadius: 1.5,
                 mb: 0.5,
@@ -99,7 +99,7 @@ export default function Sidebar({ tier, basePath }) {
               <ListItemText
                 primary={item.label}
                 primaryTypographyProps={{
-                  fontSize: '0.85rem',
+                  fontSize: { xs: '0.95rem', md: '0.85rem' },
                   fontWeight: active ? 600 : 400,
                   color: active
                     ? COLORS.neon.cyan

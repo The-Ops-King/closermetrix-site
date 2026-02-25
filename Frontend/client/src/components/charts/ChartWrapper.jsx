@@ -57,7 +57,7 @@ export default function ChartWrapper({
         border: `1px solid ${COLORS.border.subtle}`,
         borderTop: `2px solid ${hexToRgba(accentColor, 0.3)}`,
         borderRadius: `${LAYOUT.cardBorderRadius}px`,
-        padding: 3,
+        padding: { xs: 2, md: 3 },
         display: 'flex',
         flexDirection: 'column',
         transition: 'border-color 0.3s ease, box-shadow 0.3s ease',

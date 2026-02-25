@@ -708,8 +708,11 @@ function computeFinancial(calls, granularity, prev) {
           'Installments': 'purple',
           'Financed': 'blue',
           'None': 'muted',
-          'Unknown': 'amber',
+          'Unknown': 'muted',
         };
+        // Rotating colors for any plan type not in the known map
+        const fallbackColors = ['amber', 'red', 'teal', 'blue', 'purple', 'cyan', 'green'];
+        let fallbackIdx = 0;
         const counts = {};
         for (const c of revenueDeals) {
           const pp = (c.paymentPlan || '').toLowerCase().replace(/[-_]/g, ' ');
@@ -732,8 +735,20 @@ function computeFinancial(calls, granularity, prev) {
           }
           counts[label] = (counts[label] || 0) + 1;
         }
+        // Assign colors: known types get their mapped color, others cycle through fallback palette
+        const assignedFallbacks = {};
         return Object.entries(counts)
-          .map(([label, value]) => ({ label, value, color: planColors[label] || 'amber' }))
+          .map(([label, value]) => {
+            let color = planColors[label];
+            if (!color) {
+              if (!assignedFallbacks[label]) {
+                assignedFallbacks[label] = fallbackColors[fallbackIdx % fallbackColors.length];
+                fallbackIdx++;
+              }
+              color = assignedFallbacks[label];
+            }
+            return { label, value, color };
+          })
           .sort((a, b) => b.value - a.value);
       })() },
     },

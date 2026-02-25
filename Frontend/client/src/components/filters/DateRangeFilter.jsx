@@ -229,8 +229,8 @@ export default function DateRangeFilter() {
           backgroundColor: COLORS.bg.tertiary,
           border: `1px solid ${COLORS.border.subtle}`,
           borderRadius: '8px', color: COLORS.neon.cyan,
-          fontSize: '0.8rem', fontWeight: 500, textTransform: 'none',
-          px: 1.5, py: 0.6, minHeight: 34,
+          fontSize: { xs: '0.9rem', md: '0.8rem' }, fontWeight: 500, textTransform: 'none',
+          px: 1.5, py: { xs: 0.8, md: 0.6 }, minHeight: { xs: 38, md: 34 },
           '&:hover': { backgroundColor: COLORS.bg.elevated, borderColor: COLORS.border.default },
         }}
       >

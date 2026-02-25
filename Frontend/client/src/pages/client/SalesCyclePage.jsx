@@ -126,7 +126,7 @@ export default function SalesCyclePage() {
 
             <Box sx={{
               display: 'grid',
-              gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+              gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
               gridTemplateRows: { md: 'auto auto' },
               gap: 1.5,
               my: 2,

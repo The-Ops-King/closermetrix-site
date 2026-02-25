@@ -448,6 +448,7 @@ export default function ObjectionDetailTable({
             sx={{
               width: '100%',
               overflowX: 'auto',
+              WebkitOverflowScrolling: 'touch',
               borderRadius: 1,
               border: `1px solid ${COLORS.border.subtle}`,
             }}
@@ -456,6 +457,7 @@ export default function ObjectionDetailTable({
               component="table"
               sx={{
                 width: '100%',
+                minWidth: 700,
                 borderCollapse: 'collapse',
                 '& th, & td': {
                   padding: '10px 14px',

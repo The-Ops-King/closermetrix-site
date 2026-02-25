@@ -194,7 +194,7 @@ export default function Scorecard({
         background: COLORS.bg.secondary,
         border: `1px solid ${COLORS.border.subtle}`,
         borderRadius: `${LAYOUT.cardBorderRadius}px`,
-        padding: '20px 16px',
+        padding: { xs: '12px 10px', sm: '16px 14px', md: '20px 16px' },
         minWidth: 0,
         height: '100%',
         boxSizing: 'border-box',
@@ -223,7 +223,7 @@ export default function Scorecard({
       <Typography
         sx={{
           color: COLORS.text.secondary,
-          fontSize: '0.8rem',
+          fontSize: { xs: '0.72rem', sm: '0.7rem', md: '0.8rem' },
           fontWeight: 600,
           letterSpacing: '0.08em',
           textTransform: 'uppercase',
@@ -261,7 +261,7 @@ export default function Scorecard({
           <Typography
             sx={{
               color: locked ? COLORS.text.muted : glowColor,
-              fontSize: '2.5rem',
+              fontSize: { xs: '1.8rem', sm: '2rem', md: '2.5rem' },
               fontWeight: 700,
               letterSpacing: '-0.02em',
               lineHeight: 1.1,

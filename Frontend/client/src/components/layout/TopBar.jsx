@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import MenuIcon from '@mui/icons-material/Menu';
 import { useLocation } from 'react-router-dom';
 import { COLORS, LAYOUT } from '../../theme/constants';
 import { meetsMinTier } from '../../utils/tierConfig';
@@ -66,7 +67,7 @@ function downloadCsv(csvString, filename) {
   URL.revokeObjectURL(url);
 }
 
-export default function TopBar({ companyName, tier }) {
+export default function TopBar({ companyName, tier, onMenuClick }) {
   const location = useLocation();
   const isObjectionsPage = location.pathname.includes('/objections');
   const isViolationsPage = location.pathname.includes('/violations');
@@ -107,25 +108,37 @@ export default function TopBar({ companyName, tier }) {
   return (
     <Box
       sx={{
-        height: LAYOUT.topBarHeight,
+        minHeight: LAYOUT.topBarHeight,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        px: 3,
+        flexWrap: { xs: 'wrap', md: 'nowrap' },
+        px: { xs: 1.5, md: 3 },
+        py: { xs: 1, md: 0 },
+        gap: { xs: 1, md: 0 },
         borderBottom: `1px solid ${COLORS.border.subtle}`,
         backgroundColor: COLORS.bg.secondary,
         flexShrink: 0,
         zIndex: 10,
       }}
     >
-      {/* Left: Company name + tier badge */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      {/* Left: Hamburger (mobile) + Company name + tier badge */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 2 } }}>
+        {onMenuClick && (
+          <IconButton
+            onClick={onMenuClick}
+            size="small"
+            sx={{ color: COLORS.text.secondary, '&:hover': { color: COLORS.neon.cyan } }}
+          >
+            <MenuIcon />
+          </IconButton>
+        )}
         <Typography
           variant="h6"
           sx={{
             fontWeight: 600,
             color: COLORS.text.primary,
-            fontSize: '1rem',
+            fontSize: { xs: '1.05rem', md: '1rem' },
           }}
         >
           {companyName || 'Dashboard'}
@@ -133,8 +146,8 @@ export default function TopBar({ companyName, tier }) {
         {tier && <TierBadge tier={tier} size="sm" />}
       </Box>
 
-      {/* Right: Filter controls + Download button */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      {/* Right: Filter controls + Download button — wraps to full width on mobile */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 2 }, flexWrap: 'wrap', width: { xs: '100%', md: 'auto' } }}>
         {meetsMinTier(tier, 'insight') ? (
           <CloserFilter />
         ) : (

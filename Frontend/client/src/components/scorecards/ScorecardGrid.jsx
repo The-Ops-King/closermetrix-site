@@ -76,7 +76,7 @@ export default function ScorecardGrid({
         sx={{
           display: 'grid',
           gridTemplateColumns: {
-            xs: '1fr',
+            xs: 'repeat(2, 1fr)',
             sm: 'repeat(2, 1fr)',
             md: `repeat(${Math.min(columns, 3)}, 1fr)`,
             lg: `repeat(${columns}, 1fr)`,
