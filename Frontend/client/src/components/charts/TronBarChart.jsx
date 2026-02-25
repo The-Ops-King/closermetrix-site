@@ -31,6 +31,8 @@ import React, { useMemo } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { BarChart } from '@mui/x-charts/BarChart';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import { COLORS } from '../../theme/constants';
 import { getAxisFormatter, getTooltipFormatter, formatDateLabel } from '../../utils/formatters';
 import { COLOR_MAP } from '../../utils/colors';
@@ -134,6 +136,9 @@ export default function TronBarChart({
   yAxisFormat = 'number',
   stackTotalLabel,
 }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   /**
    * Extract category labels for the category axis.
    * Each data item should have a `label` or `date` field for the category axis.
@@ -248,7 +253,7 @@ export default function TronBarChart({
         horizontal: !isHorizontal,
         vertical: isHorizontal,
       }}
-      margin={{ top: 20, right: 20, bottom: bottomMargin, left: leftMargin }}
+      margin={{ top: isMobile && series.length > 1 ? 45 : 20, right: 20, bottom: bottomMargin, left: leftMargin }}
       borderRadius={4}
       slots={stackTotalLabel && stacked ? { axisContent: StackedAxisTooltip } : undefined}
       slotProps={{
@@ -256,12 +261,12 @@ export default function TronBarChart({
         legend: {
           labelStyle: {
             fill: COLORS.text.secondary,
-            fontSize: 12,
+            fontSize: isMobile ? 11 : 12,
           },
-          itemMarkWidth: 10,
-          itemMarkHeight: 10,
-          markGap: 5,
-          itemGap: 20,
+          itemMarkWidth: isMobile ? 8 : 10,
+          itemMarkHeight: isMobile ? 8 : 10,
+          markGap: isMobile ? 4 : 5,
+          itemGap: isMobile ? 12 : 20,
           position: { vertical: 'top', horizontal: 'right' },
           padding: { top: 0, bottom: 10 },
           // Hide legend if there's only one series (redundant with chart title)

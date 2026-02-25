@@ -27,6 +27,8 @@
 
 import React, { useMemo } from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import { COLORS } from '../../theme/constants';
 import { getAxisFormatter, getTooltipFormatter, formatDateLabel } from '../../utils/formatters';
 import { COLOR_MAP } from '../../utils/colors';
@@ -48,6 +50,9 @@ export default function TronLineChart({
   areaOpacity,
   stacked = false,
 }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   /**
    * Format date strings into display labels for the X axis.
    * We use scaleType 'point' (not 'time') so that tick labels always
@@ -126,17 +131,17 @@ export default function TronLineChart({
         horizontal: true,
         vertical: false,
       }}
-      margin={{ top: 20, right: 20, bottom: 40, left: 70 }}
+      margin={{ top: isMobile && series.length > 1 ? 45 : 20, right: 20, bottom: 40, left: isMobile ? 55 : 70 }}
       slotProps={{
         legend: {
           labelStyle: {
             fill: COLORS.text.secondary,
-            fontSize: 12,
+            fontSize: isMobile ? 11 : 12,
           },
-          itemMarkWidth: 10,
-          itemMarkHeight: 10,
-          markGap: 5,
-          itemGap: 20,
+          itemMarkWidth: isMobile ? 8 : 10,
+          itemMarkHeight: isMobile ? 8 : 10,
+          markGap: isMobile ? 4 : 5,
+          itemGap: isMobile ? 12 : 20,
           position: { vertical: 'top', horizontal: 'right' },
           padding: { top: 0, bottom: 10 },
         },
