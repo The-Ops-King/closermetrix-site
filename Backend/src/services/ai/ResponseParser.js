@@ -27,6 +27,20 @@ const SCORE_KEYS = scoringRubric.scoreTypes.map(s => s.key);
 const SCORE_MIN = scoringRubric.scale.min;
 const SCORE_MAX = scoringRubric.scale.max;
 
+/**
+ * Pre-compute alias lookup map for objection type normalization.
+ * Maps each lowercase alias → canonical key.
+ * Built once at module load from the aliases field in objection-types.js.
+ */
+const OBJECTION_ALIAS_MAP = {};
+for (const ot of objectionTypes) {
+  if (ot.aliases) {
+    for (const alias of ot.aliases) {
+      OBJECTION_ALIAS_MAP[alias.toLowerCase()] = ot.key;
+    }
+  }
+}
+
 class ResponseParser {
   /**
    * Parses and validates an AI response string.
@@ -201,7 +215,11 @@ class ResponseParser {
 
   /**
    * Matches an objection type against the configured types.
-   * Tries exact key, then label, then fuzzy match.
+   * Priority: exact key → exact label → alias match → fuzzy match → 'other'.
+   *
+   * Alias matching uses the pre-computed OBJECTION_ALIAS_MAP built from
+   * the `aliases` field in objection-types.js. This catches common AI
+   * variations like "Skepticism" → trust, "Budget" → financial, etc.
    *
    * @param {string} type — Raw objection type from AI
    * @returns {string} Valid objection key or 'other'
@@ -223,6 +241,14 @@ class ResponseParser {
     // Label match (case-insensitive)
     const labelMatch = objectionTypes.find(o => o.label.toLowerCase() === lower);
     if (labelMatch) return labelMatch.key;
+
+    // Alias exact match — check if the AI output is exactly one of the aliases
+    if (OBJECTION_ALIAS_MAP[lower]) return OBJECTION_ALIAS_MAP[lower];
+
+    // Alias substring match — check if any alias appears in the AI output
+    for (const [alias, key] of Object.entries(OBJECTION_ALIAS_MAP)) {
+      if (lower.includes(alias)) return key;
+    }
 
     // Fuzzy: check if any label or key is contained
     const fuzzyMatch = objectionTypes.find(o => {

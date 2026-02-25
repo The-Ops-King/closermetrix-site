@@ -20,6 +20,7 @@
 
 const bq = require('../BigQueryClient');
 const logger = require('../../utils/logger');
+const { normalizeObjectionType } = require('../../../shared/categoryValues');
 
 /**
  * Extract YYYY-MM-DD from any date-like value.
@@ -225,7 +226,7 @@ async function queryBigQuery(clientId) {
     return {
       objectionId: row.obj_objection_id || '',
       callId: row.obj_call_id || '',
-      objectionType: row.obj_objection_type || '',
+      objectionType: normalizeObjectionType(row.obj_objection_type || ''),
       objectionText: row.obj_objection_text || '',
       resolved: !!row.obj_resolved,
       resolutionMethod: row.obj_resolution_method || '',

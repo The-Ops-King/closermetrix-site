@@ -14,12 +14,13 @@
  * Data: GET /api/dashboard/objections
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { COLORS } from '../../theme/constants';
 import { useMetrics } from '../../hooks/useMetrics';
 import { useAuth } from '../../context/AuthContext';
+import { useFilters } from '../../context/FilterContext';
 import { meetsMinTier } from '../../utils/tierConfig';
 import { DUMMY_OBJECTIONS } from '../../utils/dummyData';
 import ScorecardGrid from '../../components/scorecards/ScorecardGrid';
@@ -35,6 +36,7 @@ export default function ObjectionsPage() {
   const { tier } = useAuth();
   const hasAccess = meetsMinTier(tier, 'insight');
   const { data, isLoading, error } = useMetrics('objections', { enabled: hasAccess });
+  const { setAvailableObjectionTypes } = useFilters();
 
   // Local state for detail table filters (not linked to FilterContext)
   const [resolvedFilter, setResolvedFilter] = useState(null);
@@ -45,6 +47,14 @@ export default function ObjectionsPage() {
   const sections = displayData?.sections || {};
   const charts = displayData?.charts || {};
   const tables = displayData?.tables || {};
+
+  // Push available objection types into FilterContext for the dynamic dropdown
+  useEffect(() => {
+    if (displayData?.availableObjectionTypes) {
+      setAvailableObjectionTypes(displayData.availableObjectionTypes);
+    }
+    return () => setAvailableObjectionTypes([]);
+  }, [displayData?.availableObjectionTypes, setAvailableObjectionTypes]);
 
   return (
     <Box>
@@ -160,6 +170,7 @@ export default function ObjectionsPage() {
                 series={charts.objectionTrends?.series || []}
                 yAxisFormat="number"
                 showArea={true}
+                areaOpacity={0.25}
               />
             </ChartWrapper>
           </Box>

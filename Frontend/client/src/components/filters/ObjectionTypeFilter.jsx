@@ -2,7 +2,8 @@
  * OBJECTION TYPE FILTER — Multi-select dropdown for objection types.
  *
  * Reads/writes FilterContext.objectionType (string[] | null).
- * Hardcoded options matching the 7 objection types in the system.
+ * Options are dynamic — derived from actual data via availableObjectionTypes
+ * in FilterContext, pushed by ObjectionsPage when data loads.
  * Amber accent color to match Objections page theme.
  *
  * When empty selection → shows "All Objection Types" placeholder.
@@ -18,12 +19,10 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { COLORS } from '../../theme/constants';
 import { useFilters } from '../../context/FilterContext';
-import { OBJECTION_TYPES_FILTER } from '../../../../shared/categoryValues.js';
-
-const OBJECTION_TYPES = OBJECTION_TYPES_FILTER;
 
 export default function ObjectionTypeFilter() {
-  const { objectionType, setObjectionType } = useFilters();
+  const { objectionType, setObjectionType, availableObjectionTypes } = useFilters();
+  const OBJECTION_TYPES = availableObjectionTypes.length > 0 ? availableObjectionTypes : [];
 
   // Normalize: null → []
   const selected = objectionType || [];

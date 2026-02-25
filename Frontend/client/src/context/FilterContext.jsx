@@ -35,6 +35,7 @@ export function FilterProvider({ children }) {
   const [objectionType, setObjectionType] = useState(null);
   const [granularity, setGranularity] = useState('auto');
   const [riskCategory, setRiskCategory] = useState(null);
+  const [availableObjectionTypes, setAvailableObjectionTypes] = useState([]);
 
   /**
    * Reset all filters to defaults.
@@ -81,6 +82,8 @@ export function FilterProvider({ children }) {
     setRiskCategory,
     resetFilters,
     queryParams,
+    availableObjectionTypes,
+    setAvailableObjectionTypes,
   };
 
   return <FilterContext.Provider value={value}>{children}</FilterContext.Provider>;

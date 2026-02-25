@@ -45,7 +45,7 @@ import { COLORS } from '../theme/constants';
  * Used when we don't know segment labels ahead of time and need to assign colors by index.
  * Ordered for maximum visual contrast between adjacent slices.
  */
-const PIE_COLORS = ['cyan', 'green', 'amber', 'purple', 'blue', 'red', 'teal', 'muted'];
+const PIE_COLORS = ['cyan', 'green', 'amber', 'purple', 'blue', 'red', 'magenta', 'muted'];
 
 /** Safe divide — returns 0 if divisor is 0 */
 function sd(a, b) { return b === 0 ? 0 : a / b; }
@@ -338,7 +338,21 @@ export function computePageData(section, rawData, filters) {
     case 'attendance': return computeAttendance(calls, granularity, prev);
     case 'call-outcomes': return computeCallOutcomes(calls, granularity, prev);
     case 'sales-cycle': return computeSalesCycle(calls, closeCycles, prev);
-    case 'objections': return computeObjections(calls, objections, granularity, prev);
+    case 'objections': {
+      // Compute available types from ALL objections (date+closer filtered, but NOT type-filtered)
+      const allObjForTypes = filterObjections(rawData.objections || [], dateStart, dateEnd, closerId, null);
+      const typeCounts = {};
+      allObjForTypes.forEach(o => {
+        const t = o.objectionType || 'Other';
+        typeCounts[t] = (typeCounts[t] || 0) + 1;
+      });
+      const availableObjectionTypes = Object.entries(typeCounts)
+        .sort((a, b) => b[1] - a[1])
+        .map(([type]) => type);
+      const result = computeObjections(calls, objections, granularity, prev);
+      result.availableObjectionTypes = availableObjectionTypes;
+      return result;
+    }
     case 'projections': return computeProjections(calls, closeCycles, rawData, filters);
     case 'violations': return computeViolations(calls, granularity, prev);
     case 'adherence': return computeAdherence(calls, granularity, prev);

@@ -95,6 +95,37 @@ const RISK_CATEGORY_COLORS = {
 };
 
 // ─────────────────────────────────────────────────────────────
+// OBJECTION TYPE ALIASES — normalize near-duplicate AI labels
+// ─────────────────────────────────────────────────────────────
+
+/**
+ * The AI pipeline sometimes produces similar-but-different labels
+ * for the same concept. This map merges them into a canonical name.
+ * Key = AI-produced label (exact match), Value = canonical label.
+ *
+ * Also handles legacy types that exist in BQ data but are not in
+ * the canonical 14-type list (e.g., 'Closer Declined' → 'Other').
+ */
+const OBJECTION_TYPE_ALIASES = {
+  'Skepticism': 'Trust/Credibility',
+  'Closer Declined': 'Other',
+  'Fear of Failure': 'Not Ready',
+  'Past Bad Experience': 'Already Tried',
+  'Self-Doubt': 'Not Ready',
+  'Needs More Info': 'Value',
+  'Already Have Solution': 'DIY',
+  'Not Interested': 'Other',
+};
+
+/**
+ * Normalize an objection type string using the alias map.
+ * Returns the canonical name, or the original if no alias exists.
+ */
+function normalizeObjectionType(type) {
+  return OBJECTION_TYPE_ALIASES[type] || type;
+}
+
+// ─────────────────────────────────────────────────────────────
 // LOST REASON COLORS — for pie charts and per-closer breakdowns
 // ─────────────────────────────────────────────────────────────
 
@@ -173,6 +204,8 @@ if (typeof module !== 'undefined' && module.exports) {
     OBJECTION_TYPES_FILTER,
     OBJECTION_TYPES_ALL,
     OBJECTION_TYPE_COLORS,
+    OBJECTION_TYPE_ALIASES,
+    normalizeObjectionType,
     RISK_CATEGORIES,
     RISK_CATEGORY_LABELS,
     RISK_CATEGORY_COLORS,
@@ -188,6 +221,8 @@ export {
   OBJECTION_TYPES_FILTER,
   OBJECTION_TYPES_ALL,
   OBJECTION_TYPE_COLORS,
+  OBJECTION_TYPE_ALIASES,
+  normalizeObjectionType,
   RISK_CATEGORIES,
   RISK_CATEGORY_LABELS,
   RISK_CATEGORY_COLORS,

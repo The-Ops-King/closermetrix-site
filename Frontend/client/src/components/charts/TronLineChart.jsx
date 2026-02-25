@@ -45,6 +45,7 @@ export default function TronLineChart({
   height,
   yAxisFormat = 'number',
   showArea = true,
+  areaOpacity,
   stacked = false,
 }) {
   /**
@@ -167,7 +168,7 @@ export default function TronLineChart({
 
         // Area fill — gradient fade to black (transparent at bottom)
         '& .MuiAreaElement-root': {
-          fillOpacity: 0.6,
+          fillOpacity: areaOpacity ?? 0.6,
           maskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 85%)',
           WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 85%)',
         },
