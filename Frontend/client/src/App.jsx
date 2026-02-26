@@ -30,6 +30,7 @@ import ViolationsPage from './pages/client/ViolationsPage';
 import AdherencePage from './pages/client/AdherencePage';
 import MarketInsightPage from './pages/client/MarketInsightPage';
 import CloserScoreboardPage from './pages/client/CloserScoreboardPage';
+import SettingsPage from './pages/client/SettingsPage';
 
 // Admin pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -67,6 +68,9 @@ export default function App() {
             {/* Executive pages */}
             <Route path="violations" element={<ViolationsPage />} />
             <Route path="adherence" element={<AdherencePage />} />
+
+            {/* Settings — all tiers */}
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
 
           {/* ── Admin Panel ── */}
@@ -90,6 +94,7 @@ export default function App() {
             <Route path="closer-scoreboard" element={<CloserScoreboardPage />} />
             <Route path="violations" element={<ViolationsPage />} />
             <Route path="adherence" element={<AdherencePage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
 
           {/* ── Partner Portal ── */}

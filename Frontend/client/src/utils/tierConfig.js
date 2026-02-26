@@ -26,6 +26,14 @@ export const NAV_ITEMS = [
 ];
 
 /**
+ * Settings nav item — rendered separately at sidebar bottom with gear icon.
+ * Available to all tiers (section-level gating happens inside SettingsPage).
+ */
+export const SETTINGS_NAV_ITEM = {
+  key: 'settings', label: 'Settings', icon: 'settings', path: '/settings', minTier: 'basic',
+};
+
+/**
  * Filter nav items to only show pages accessible at the given tier.
  * @param {string} tier - 'basic' | 'insight' | 'executive'
  * @returns {Array} Filtered nav items

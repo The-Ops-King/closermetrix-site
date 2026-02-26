@@ -16,8 +16,9 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { COLORS, LAYOUT } from '../../theme/constants';
-import { NAV_ITEMS, meetsMinTier } from '../../utils/tierConfig';
+import { NAV_ITEMS, SETTINGS_NAV_ITEM, meetsMinTier } from '../../utils/tierConfig';
 
 export default function Sidebar({ tier, basePath, onNavigate }) {
   const navigate = useNavigate();
@@ -123,6 +124,47 @@ export default function Sidebar({ tier, basePath, onNavigate }) {
           );
         })}
       </List>
+
+      {/* Settings — gear icon pinned above footer */}
+      <Box sx={{ px: 1, pb: 1 }}>
+        {(() => {
+          const settingsActive = location.pathname.endsWith('/settings');
+          return (
+            <ListItemButton
+              onClick={() => { navigate(`${basePath}${SETTINGS_NAV_ITEM.path}`); onNavigate?.(); }}
+              sx={{
+                borderRadius: 1.5,
+                py: 1.2,
+                px: 2,
+                backgroundColor: settingsActive ? 'rgba(77, 212, 232, 0.08)' : 'transparent',
+                borderLeft: settingsActive ? `3px solid ${COLORS.neon.cyan}` : '3px solid transparent',
+                '&:hover': {
+                  backgroundColor: settingsActive
+                    ? 'rgba(77, 212, 232, 0.12)'
+                    : 'rgba(255, 255, 255, 0.04)',
+                },
+              }}
+            >
+              <SettingsIcon
+                sx={{
+                  fontSize: '1.1rem',
+                  color: settingsActive ? COLORS.neon.cyan : COLORS.text.muted,
+                  mr: 1.5,
+                }}
+              />
+              <ListItemText
+                primary={SETTINGS_NAV_ITEM.label}
+                primaryTypographyProps={{
+                  fontSize: { xs: '0.95rem', md: '0.85rem' },
+                  fontWeight: settingsActive ? 600 : 400,
+                  color: settingsActive ? COLORS.neon.cyan : COLORS.text.secondary,
+                  letterSpacing: '0.02em',
+                }}
+              />
+            </ListItemButton>
+          );
+        })()}
+      </Box>
 
       {/* Footer — subtle branding */}
       <Box sx={{ p: 2, borderTop: `1px solid ${COLORS.border.subtle}` }}>
