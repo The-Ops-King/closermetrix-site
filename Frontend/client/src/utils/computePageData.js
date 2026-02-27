@@ -1942,8 +1942,11 @@ function computeViolations(calls, granularity, prev) {
 
   for (const c of held) {
     // Prefer structured complianceFlags from AI pipeline; fall back to keyMoments parsing
-    if (Array.isArray(c.complianceFlags) && c.complianceFlags.length > 0) {
-      for (const flag of c.complianceFlags) {
+    // complianceFlags is an object: { flags: [...], categories_found, has_ftc_warning, total_flags }
+    const cf = c.complianceFlags;
+    const cfFlags = cf && Array.isArray(cf.flags) ? cf.flags : (Array.isArray(cf) ? cf : null);
+    if (cfFlags && cfFlags.length > 0) {
+      for (const flag of cfFlags) {
         const category = flag.category;
         if (category && riskCategories.some(rc => category.toLowerCase().includes(rc.toLowerCase()))) {
           riskFlags.push({
@@ -1952,9 +1955,9 @@ function computeViolations(calls, granularity, prev) {
             closerId: c.closerId,
             callType: c.callType,
             riskCategory: category,
-            timestamp: flag.timestamp || '',
-            exactPhrase: flag.exact_phrase || '',
-            whyFlagged: flag.explanation || '',
+            timestamp: flag.timestamp_seconds ? `${Math.floor(flag.timestamp_seconds / 60)}:${String(flag.timestamp_seconds % 60).padStart(2, '0')}` : (flag.timestamp || ''),
+            exactPhrase: flag.phrase || flag.exact_phrase || '',
+            whyFlagged: flag.why_flagged || flag.explanation || '',
             recordingUrl: c.recordingUrl,
             transcriptUrl: c.transcriptLink,
           });
