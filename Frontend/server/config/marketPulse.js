@@ -62,6 +62,41 @@ Respond with ONLY a JSON array, no other text:
 Here are the statements:
 {{statements}}`,
 
+  // ── Script Comparison ──────────────────────────────────────────────
+  scriptComparisonModel: 'claude-sonnet-4-20250514',
+  scriptComparisonMaxTokens: 2000,
+
+  scriptComparisonSystemPrompt: `You are a sales methodology analyst. You compare what prospects actually say in sales calls against a client's sales script template to find alignment gaps. Return structured JSON only.`,
+
+  scriptComparisonPrompt: `You have two inputs:
+
+1. PROSPECT THEMES — these are clustered themes from what prospects actually said on sales calls (type: {{type}}):
+{{themes}}
+
+2. SALES SCRIPT TEMPLATE — this is the script closers are supposed to follow:
+{{scriptTemplate}}
+
+Analyze the alignment between what prospects are saying and what the script covers. Return ONLY valid JSON (no markdown fences):
+
+{
+  "addressed": [
+    { "theme": "<prospect theme>", "scriptSection": "<which part of the script addresses this>", "note": "<brief note on alignment>" }
+  ],
+  "gaps": [
+    { "theme": "<prospect theme NOT addressed by the script>", "suggestion": "<how the script could be updated to address this>" }
+  ],
+  "unused": [
+    { "scriptSection": "<script section/question that never shows up in prospect conversations>", "note": "<why this might be happening>" }
+  ]
+}
+
+Rules:
+- "addressed": themes the script already covers well
+- "gaps": themes prospects bring up that the script DOESN'T address — these are opportunities to improve the script
+- "unused": script sections that aren't surfacing in conversations — either closers skip them or they don't resonate
+- Be specific. Reference actual theme text and actual script sections.
+- Return at least 1 item in each category if possible. If a category genuinely has 0, return an empty array.`,
+
   // ── UI Colors ──────────────────────────────────────────────────────
   // Color names from the Tron theme (resolved via COLORS.neon.* on frontend).
   // Used by the MarketInsightPage to style each section.

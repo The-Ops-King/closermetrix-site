@@ -263,6 +263,69 @@ function VoiceTable({ rows, accentColor, emptyLabel }) {
   );
 }
 
+// ── Script Alignment Section ────────────────────────────────────────
+
+function ScriptAlignmentSection({ data, loading }) {
+  if (loading) {
+    return (
+      <Box sx={{ py: 2, px: 1.5, borderTop: `1px solid ${COLORS.border.subtle}` }}>
+        <Box sx={{ height: 24, width: '60%', borderRadius: 1, backgroundColor: COLORS.bg.elevated, animation: 'pulse 1.5s ease-in-out infinite', '@keyframes pulse': { '0%, 100%': { opacity: 0.4 }, '50%': { opacity: 0.7 } } }} />
+      </Box>
+    );
+  }
+  if (!data) return null;
+
+  const columns = [
+    { key: 'addressed', label: 'Addressed', color: COLORS.neon.green, items: data.addressed || [] },
+    { key: 'gaps', label: 'Gaps', color: COLORS.neon.amber, items: data.gaps || [] },
+    { key: 'unused', label: 'Unused Script Sections', color: COLORS.text.muted, items: data.unused || [] },
+  ];
+
+  const hasAny = columns.some(c => c.items.length > 0);
+  if (!hasAny) return null;
+
+  return (
+    <Box sx={{ borderTop: `1px solid ${COLORS.border.subtle}`, px: 2, py: 1.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+        <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: COLORS.text.muted }}>
+          Script Alignment
+        </Typography>
+        <AiBadge />
+      </Box>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 1fr' }, gap: 1.5 }}>
+        {columns.map(col => (
+          <Box key={col.key} sx={{ borderRadius: 1.5, border: `1px solid ${col.color}33`, backgroundColor: `${col.color}08`, p: 1.5 }}>
+            <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: col.color, mb: 1 }}>
+              {col.label} ({col.items.length})
+            </Typography>
+            {col.items.length === 0 ? (
+              <Typography sx={{ fontSize: '0.75rem', color: COLORS.text.muted, fontStyle: 'italic' }}>None</Typography>
+            ) : (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
+                {col.items.map((item, i) => (
+                  <Box key={i} sx={{ fontSize: '0.78rem', color: COLORS.text.secondary, lineHeight: 1.4 }}>
+                    <Typography component="span" sx={{ fontWeight: 600, color: COLORS.text.primary, fontSize: '0.78rem' }}>
+                      {item.theme || item.scriptSection}
+                    </Typography>
+                    <Typography component="span" sx={{ color: COLORS.text.muted, fontSize: '0.75rem' }}>
+                      {' '}— {item.note || item.suggestion || ''}
+                    </Typography>
+                    {item.scriptSection && item.theme && (
+                      <Typography sx={{ color: COLORS.text.muted, fontSize: '0.7rem', mt: 0.25 }}>
+                        Script: {item.scriptSection}
+                      </Typography>
+                    )}
+                  </Box>
+                ))}
+              </Box>
+            )}
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+}
+
 // ── Main Page ─────────────────────────────────────────────────────
 
 export default function MarketInsightPage() {
@@ -279,6 +342,10 @@ export default function MarketInsightPage() {
   const [goalThemes, setGoalThemes] = useState(null);
   const [pulseLoading, setPulseLoading] = useState({ pains: false, goals: false });
   const [pulseError, setPulseError] = useState({ pains: null, goals: null });
+
+  // ── Script Comparison state ──
+  const [scriptComparison, setScriptComparison] = useState({ pains: null, goals: null });
+  const [scriptLoading, setScriptLoading] = useState({ pains: false, goals: false });
 
   // Fingerprint to prevent duplicate fetches
   const lastFingerprintRef = useRef('');
@@ -332,6 +399,30 @@ export default function MarketInsightPage() {
     if (painTexts.length > 0) fetchPulse('pains', painTexts);
     if (goalTexts.length > 0) fetchPulse('goals', goalTexts);
   }, [tables.pains, tables.goals, fetchPulse]);
+
+  // After themes load, fetch script comparison
+  useEffect(() => {
+    const authOpts = token ? { token } : {};
+    if (isAdmin && adminViewClientId) authOpts.viewClientId = adminViewClientId;
+
+    const fetchComparison = async (type, themes) => {
+      if (!themes || themes.length === 0) return;
+      setScriptLoading(prev => ({ ...prev, [type]: true }));
+      try {
+        const res = await apiPost('/dashboard/market-pulse/script-comparison', { themes, type }, authOpts);
+        if (res?.success && res?.data) {
+          setScriptComparison(prev => ({ ...prev, [type]: res.data }));
+        }
+      } catch (err) {
+        // Silently fail — script comparison is optional enhancement
+      } finally {
+        setScriptLoading(prev => ({ ...prev, [type]: false }));
+      }
+    };
+
+    if (painThemes && painThemes.length > 0) fetchComparison('pains', painThemes);
+    if (goalThemes && goalThemes.length > 0) fetchComparison('goals', goalThemes);
+  }, [painThemes, goalThemes, token, isAdmin, adminViewClientId]);
 
   // AI Insight for this page
   const insight = useInsight('market-insight', data);
@@ -480,6 +571,7 @@ export default function MarketInsightPage() {
                   </Typography>
                 </Box>
               )}
+              <ScriptAlignmentSection data={scriptComparison.pains} loading={scriptLoading.pains} />
             </Box>
 
             {/* Goals Themes */}
@@ -529,6 +621,7 @@ export default function MarketInsightPage() {
                   </Typography>
                 </Box>
               )}
+              <ScriptAlignmentSection data={scriptComparison.goals} loading={scriptLoading.goals} />
             </Box>
           </Box>
 

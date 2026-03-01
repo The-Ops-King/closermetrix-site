@@ -152,10 +152,65 @@ async function condenseTexts(clientId, type, texts, options = {}) {
 }
 
 /**
+ * Compare clustered prospect themes against the client's script template.
+ *
+ * @param {string} clientId - Client ID (for logging)
+ * @param {'pains'|'goals'} type - Theme type
+ * @param {Array<{theme: string, count: number}>} themes - Clustered themes from condenseTexts
+ * @param {string} scriptTemplate - The client's sales script
+ * @returns {Promise<{addressed: Array, gaps: Array, unused: Array}>}
+ */
+async function compareWithScript(clientId, type, themes, scriptTemplate) {
+  if (!themes || themes.length === 0 || !scriptTemplate) return { addressed: [], gaps: [], unused: [] };
+
+  const client = getClient();
+  if (!client) throw new Error('ANTHROPIC_API_KEY not configured');
+
+  const themesText = themes.map((t, i) => `${i + 1}. "${t.theme}" (mentioned ${t.count} times)`).join('\n');
+  const typeLabel = pulseConfig.typeLabels[type] || type;
+
+  const prompt = pulseConfig.scriptComparisonPrompt
+    .replace('{{type}}', typeLabel)
+    .replace('{{themes}}', themesText)
+    .replace('{{scriptTemplate}}', scriptTemplate);
+
+  logger.info('Market Pulse script comparison request', { clientId, type, themeCount: themes.length });
+
+  const response = await client.messages.create({
+    model: pulseConfig.scriptComparisonModel,
+    max_tokens: pulseConfig.scriptComparisonMaxTokens,
+    system: pulseConfig.scriptComparisonSystemPrompt,
+    messages: [{ role: 'user', content: prompt }],
+  });
+
+  const responseText = response.content
+    .filter(block => block.type === 'text')
+    .map(block => block.text)
+    .join('');
+
+  let result;
+  try {
+    const jsonStr = responseText.includes('{')
+      ? responseText.slice(responseText.indexOf('{'), responseText.lastIndexOf('}') + 1)
+      : responseText;
+    result = JSON.parse(jsonStr);
+  } catch (parseErr) {
+    logger.error('Script comparison parse error', { clientId, type, error: parseErr.message });
+    throw new Error('Failed to parse script comparison response');
+  }
+
+  return {
+    addressed: Array.isArray(result.addressed) ? result.addressed : [],
+    gaps: Array.isArray(result.gaps) ? result.gaps : [],
+    unused: Array.isArray(result.unused) ? result.unused : [],
+  };
+}
+
+/**
  * Check whether the Market Pulse service is available.
  */
 function isAvailable() {
   return Boolean(config.anthropicApiKey);
 }
 
-module.exports = { condenseTexts, isAvailable };
+module.exports = { condenseTexts, compareWithScript, isAvailable };

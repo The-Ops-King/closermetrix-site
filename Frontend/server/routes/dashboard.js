@@ -43,7 +43,8 @@ const { getRawData } = require('../db/queries/rawData');
 const { getSettingsData } = require('../db/queries/settings');
 const marketPulse = require('../services/marketPulse');
 const insightEngine = require('../services/insightEngine');
-const { getLatestInsight } = require('../db/queries/insightLog');
+const { getLatestInsight, getLatestInsightForDate, getCompareInsightsForDate, insertInsight } = require('../db/queries/insightLog');
+const { v4: uuidv4 } = require('uuid');
 
 const router = express.Router();
 
@@ -343,6 +344,41 @@ router.post('/market-pulse', async (req, res) => {
   }
 });
 
+// ── Market Pulse Script Comparison (Insight+) ────────────────
+
+router.post('/market-pulse/script-comparison', async (req, res) => {
+  try {
+    if (!marketPulse.isAvailable()) {
+      return res.status(503).json({ success: false, error: 'Market Pulse AI is not configured' });
+    }
+
+    const { themes, type } = req.body;
+
+    if (!type || !['pains', 'goals'].includes(type)) {
+      return res.status(400).json({ success: false, error: 'type must be "pains" or "goals"' });
+    }
+
+    if (!Array.isArray(themes) || themes.length === 0) {
+      return res.json({ success: true, data: { addressed: [], gaps: [], unused: [] } });
+    }
+
+    // Fetch the client's script template
+    const settings = await getSettingsData(req.clientId);
+    const scriptTemplate = settings?.script_template;
+
+    if (!scriptTemplate) {
+      return res.json({ success: true, data: null, message: 'No script template configured' });
+    }
+
+    const result = await marketPulse.compareWithScript(req.clientId, type, themes, scriptTemplate);
+
+    res.json({ success: true, data: result });
+  } catch (err) {
+    logger.error('Script comparison endpoint error', { error: err.message, clientId: req.clientId });
+    res.status(500).json({ success: false, error: 'Failed to generate script comparison' });
+  }
+});
+
 // ── AI Insights — Pre-Generated Daily (GET) ──────────────────
 
 router.get('/insights', async (req, res) => {
@@ -417,11 +453,25 @@ router.post('/insights', async (req, res) => {
       });
     }
 
+    // Fetch KPI targets for context
+    let kpiTargets = null;
+    try {
+      const settings = await getSettingsData(req.clientId);
+      if (settings?.settings_json) {
+        const parsed = typeof settings.settings_json === 'string'
+          ? JSON.parse(settings.settings_json)
+          : settings.settings_json;
+        kpiTargets = parsed?.kpiTargets || null;
+      }
+    } catch (e) {
+      // KPI targets are optional — don't fail the insight
+    }
+
     const result = await insightEngine.generateInsight(
       req.clientId,
       section,
       metrics,
-      { force: !!force }
+      { force: !!force, kpiTargets }
     );
 
     res.json({
@@ -438,6 +488,205 @@ router.post('/insights', async (req, res) => {
       success: false,
       error: 'Failed to generate insight',
     });
+  }
+});
+
+// ── Data Analysis Insights — Daily Cached (GET) ──────────────
+// Returns today's pre-generated data-analysis insight from InsightLog.
+// If not generated yet, returns { data: null } so the frontend knows to POST.
+
+router.get('/data-analysis-insights', async (req, res) => {
+  try {
+    const { tab } = req.query;
+
+    if (!tab || typeof tab !== 'string') {
+      return res.status(400).json({ success: false, error: 'tab query parameter is required' });
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+
+    // Compare tab: fetch all compare rows for today
+    if (tab === 'compare') {
+      const rows = await getCompareInsightsForDate(req.clientId, today);
+      if (rows.length === 0) {
+        return res.json({ success: true, data: null });
+      }
+      // Parse each row's text as JSON
+      const comparisons = rows.map(r => {
+        try { return JSON.parse(r.text); }
+        catch { return null; }
+      }).filter(Boolean);
+
+      return res.json({
+        success: true,
+        data: { comparisons, generatedAt: rows[0].generatedAt },
+      });
+    }
+
+    // Single tab: overview, team, individual
+    const section = `data-analysis-${tab}`;
+    const insight = await getLatestInsightForDate(req.clientId, section, today);
+
+    if (!insight) {
+      return res.json({ success: true, data: null });
+    }
+
+    // Parse stored JSON
+    let parsed = null;
+    try { parsed = JSON.parse(insight.text); }
+    catch { parsed = null; }
+
+    res.json({
+      success: true,
+      data: { ...parsed, generatedAt: insight.generatedAt },
+    });
+  } catch (err) {
+    // Degrade gracefully
+    logger.warn('GET data-analysis-insights unavailable', {
+      error: err.message, clientId: req.clientId, tab: req.query?.tab,
+    });
+    res.json({ success: true, data: null });
+  }
+});
+
+// ── Data Analysis Insights — Generate (POST) ─────────────────
+// Frontend sends pre-computed metrics. Backend calls Opus 4.6, stores in BQ.
+
+router.post('/data-analysis-insights', async (req, res) => {
+  try {
+    if (!insightEngine.isAvailable()) {
+      return res.status(503).json({ success: false, error: 'AI not configured' });
+    }
+
+    const { tab, metrics, closers, dateRange, teamAvg } = req.body;
+
+    if (!tab || !metrics) {
+      return res.status(400).json({ success: false, error: 'tab and metrics are required' });
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+
+    // ── Compare tab: generate one insight per closer vs team avg ──
+    if (tab === 'compare') {
+      const closerList = closers || [];
+
+      // Check BQ for existing comparisons generated today
+      const existing = await getCompareInsightsForDate(req.clientId, today);
+      const existingBySection = {};
+      for (const row of existing) {
+        try { existingBySection[row.section] = JSON.parse(row.text); }
+        catch { /* skip unparseable */ }
+      }
+
+      // If all closers already have comparisons, return cached data
+      const allCovered = closerList.length > 0 && closerList.every(c => {
+        const key = `data-analysis-compare-${c.closerId || c.name}`;
+        return existingBySection[key];
+      });
+
+      if (allCovered) {
+        const comparisons = Object.values(existingBySection);
+        return res.json({
+          success: true,
+          data: { comparisons, generatedAt: existing[0].generatedAt },
+        });
+      }
+
+      // Generate comparisons for closers missing from today's cache
+      const comparisons = [];
+
+      for (const closer of closerList) {
+        const sectionKey = `data-analysis-compare-${closer.closerId || closer.name}`;
+
+        // Reuse existing if available
+        if (existingBySection[sectionKey]) {
+          comparisons.push(existingBySection[sectionKey]);
+          continue;
+        }
+
+        const closerMetrics = {
+          closer,
+          teamAvg: teamAvg || {},
+          dateRange: dateRange || 'the selected period',
+        };
+
+        const result = await insightEngine.generateInsight(
+          req.clientId,
+          'data-analysis-compare',
+          closerMetrics,
+          { force: true }
+        );
+
+        const parsed = result.json || JSON.parse(result.text);
+        comparisons.push(parsed);
+
+        // Store in InsightLog
+        await insertInsight({
+          insightId: uuidv4(),
+          clientId: req.clientId,
+          section: sectionKey,
+          insightText: JSON.stringify(parsed),
+          metricsSnapshot: JSON.stringify(closerMetrics),
+          modelUsed: result.model,
+          tokensUsed: result.tokensUsed,
+          generationType: 'daily',
+        });
+      }
+
+      return res.json({
+        success: true,
+        data: { comparisons, generatedAt: new Date().toISOString() },
+      });
+    }
+
+    // ── Single tab: overview, team, individual ──
+    const section = `data-analysis-${tab}`;
+
+    // Double-check BQ (race condition guard)
+    const existing = await getLatestInsightForDate(req.clientId, section, today);
+    if (existing) {
+      let parsed = null;
+      try { parsed = JSON.parse(existing.text); }
+      catch { parsed = null; }
+      return res.json({
+        success: true,
+        data: { ...parsed, generatedAt: existing.generatedAt },
+      });
+    }
+
+    // Build metrics with dateRange
+    const enrichedMetrics = { ...metrics, dateRange: dateRange || 'the selected period' };
+
+    const result = await insightEngine.generateInsight(
+      req.clientId,
+      section,
+      enrichedMetrics,
+      { force: true }
+    );
+
+    const parsed = result.json || JSON.parse(result.text);
+
+    // Store in InsightLog
+    await insertInsight({
+      insightId: uuidv4(),
+      clientId: req.clientId,
+      section,
+      insightText: JSON.stringify(parsed),
+      metricsSnapshot: JSON.stringify(enrichedMetrics),
+      modelUsed: result.model,
+      tokensUsed: result.tokensUsed,
+      generationType: 'daily',
+    });
+
+    res.json({
+      success: true,
+      data: { ...parsed, generatedAt: new Date().toISOString() },
+    });
+  } catch (err) {
+    logger.error('POST data-analysis-insights error', {
+      error: err.message, clientId: req.clientId, tab: req.body?.tab,
+    });
+    res.status(500).json({ success: false, error: 'Failed to generate analysis' });
   }
 });
 
