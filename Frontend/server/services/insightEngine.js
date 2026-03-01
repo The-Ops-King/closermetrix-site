@@ -62,7 +62,7 @@ function pruneCache() {
  * @param {Array<{ text: string, generatedAt: string }>} [priorInsights]
  * @param {object} [closerProfiles] - Cross-section closer profiles for holistic analysis
  */
-function buildPrompt(section, metrics, priorInsights, closerProfiles) {
+function buildPrompt(section, metrics, priorInsights, closerProfiles, kpiTargets) {
   const template = insightConfig.sectionPrompts[section];
   if (!template) {
     throw new Error(`No insight prompt template for section: ${section}`);
@@ -95,6 +95,12 @@ function buildPrompt(section, metrics, priorInsights, closerProfiles) {
     prompt += insightConfig.closerProfilesPrompt.replace('{{closerProfiles}}', profilesJson);
   }
 
+  // Append KPI targets for goal-aware analysis
+  if (kpiTargets && Object.keys(kpiTargets).length > 0) {
+    const targetsJson = JSON.stringify(kpiTargets, null, 2);
+    prompt += insightConfig.kpiTargetsPrompt.replace('{{kpiTargets}}', targetsJson);
+  }
+
   return prompt;
 }
 
@@ -109,7 +115,9 @@ function buildPrompt(section, metrics, priorInsights, closerProfiles) {
  * @param {object} [options] - Options
  * @param {boolean} [options.force] - Skip cache and force fresh AI call
  * @param {Array<{ text: string, generatedAt: string }>} [options.priorInsights] - Prior insights for trend context
- * @returns {Promise<{ text: string, model: string, tokensUsed: number }>} AI-generated insight text + metadata
+ * @param {string} [options.modelOverride] - Override the default model (e.g. for Opus on data-analysis)
+ * @param {number} [options.maxTokensOverride] - Override the default max tokens
+ * @returns {Promise<{ text: string, json: object|null, model: string, tokensUsed: number }>} AI-generated insight + metadata
  * @throws {Error} If API key is missing or AI call fails
  */
 async function generateInsight(clientId, section, metrics, options = {}) {
@@ -127,6 +135,13 @@ async function generateInsight(clientId, section, metrics, options = {}) {
     throw new Error(`Unknown insight section: ${section}`);
   }
 
+  // Determine model + maxTokens (data-analysis sections use Opus)
+  const isDataAnalysis = section.startsWith('data-analysis-');
+  const model = options.modelOverride
+    || (isDataAnalysis ? insightConfig.dataAnalysisModel : insightConfig.model);
+  const maxTokens = options.maxTokensOverride
+    || (isDataAnalysis ? insightConfig.dataAnalysisMaxTokens : insightConfig.maxTokens);
+
   // Check cache (skip if force refresh)
   const cacheTtlMs = insightConfig.cacheTtlMinutes * 60 * 1000;
   pruneCache();
@@ -135,23 +150,28 @@ async function generateInsight(clientId, section, metrics, options = {}) {
     const cached = cache.get(cacheKey);
     if (cached && cached.expiresAt > Date.now()) {
       logger.debug('Insight cache hit', { clientId, section, key: cacheKey });
-      return { text: cached.text };
+      return { text: cached.text, json: cached.json || null };
     }
   }
 
-  const prompt = buildPrompt(section, metrics, options.priorInsights, options.closerProfiles);
+  const prompt = buildPrompt(section, metrics, options.priorInsights, options.closerProfiles, options.kpiTargets);
 
   logger.info('Insight AI request', { clientId, section });
 
-  const response = await client.messages.create({
-    model: insightConfig.model,
-    max_tokens: insightConfig.maxTokens,
-    system: insightConfig.systemPrompt,
+  // Use the data-analysis system prompt for structured JSON sections
+  const systemPrompt = isDataAnalysis
+    ? 'You are a high-ticket sales analytics advisor. You return structured JSON analysis. Follow the schema exactly. Do NOT wrap output in markdown code fences.'
+    : insightConfig.systemPrompt;
+
+  let response = await client.messages.create({
+    model,
+    max_tokens: maxTokens,
+    system: systemPrompt,
     messages: [{ role: 'user', content: prompt }],
   });
 
   // Extract text from response
-  const text = response.content
+  let text = response.content
     .filter(block => block.type === 'text')
     .map(block => block.text)
     .join('')
@@ -161,13 +181,46 @@ async function generateInsight(clientId, section, metrics, options = {}) {
     throw new Error('AI returned empty insight text');
   }
 
+  // For data-analysis sections, parse JSON response (with retry on failure)
+  let json = null;
+  if (isDataAnalysis) {
+    // Strip markdown code fences if present
+    const cleaned = text.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+    try {
+      json = JSON.parse(cleaned);
+    } catch (parseErr) {
+      logger.warn('Data analysis JSON parse failed, retrying', {
+        clientId, section, error: parseErr.message,
+      });
+      // Retry: ask the model to fix its JSON
+      const retryResponse = await client.messages.create({
+        model,
+        max_tokens: maxTokens,
+        system: 'You previously returned invalid JSON. Fix it and return ONLY valid JSON — no markdown fences, no explanation.',
+        messages: [
+          { role: 'user', content: prompt },
+          { role: 'assistant', content: text },
+          { role: 'user', content: 'That was not valid JSON. Please return ONLY the corrected JSON object.' },
+        ],
+      });
+      const retryText = retryResponse.content
+        .filter(block => block.type === 'text')
+        .map(block => block.text)
+        .join('')
+        .trim();
+      const retryCleaned = retryText.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/i, '').trim();
+      json = JSON.parse(retryCleaned); // Let it throw if still invalid
+      text = retryCleaned;
+    }
+  }
+
   // Cache result
-  cache.set(cacheKey, { text, expiresAt: Date.now() + cacheTtlMs });
+  cache.set(cacheKey, { text, json, expiresAt: Date.now() + cacheTtlMs });
 
   const tokensUsed = response.usage?.output_tokens || 0;
-  logger.info('Insight AI success', { clientId, section, textLength: text.length, tokensUsed });
+  logger.info('Insight AI success', { clientId, section, textLength: text.length, tokensUsed, isDataAnalysis });
 
-  return { text, model: insightConfig.model, tokensUsed };
+  return { text, json, model, tokensUsed };
 }
 
 /**

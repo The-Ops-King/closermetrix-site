@@ -131,6 +131,9 @@ class ResponseParser {
       disqualification_reason: this._normalizeString(parsed.disqualification_reason, null),
       payment_plan_offered: this._normalizePaymentPlan(parsed.payment_plan_offered),
       compliance_flags: this._normalizeComplianceFlags(parsed.compliance_flags),
+      prospect_goals: this._normalizeString(parsed.prospect_goals, null),
+      prospect_pains: this._normalizeString(parsed.prospect_pains, null),
+      prospect_situation: this._normalizeString(parsed.prospect_situation, null),
     };
   }
 

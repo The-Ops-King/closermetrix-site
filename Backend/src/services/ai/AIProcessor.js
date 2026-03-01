@@ -241,9 +241,13 @@ class AIProcessor {
       ai_summary: aiData.summary,
       ai_feedback: aiData.coaching_notes,
       lost_reason: aiData.disqualification_reason,
-      payment_plan_offered: aiData.payment_plan_offered || null,
-      compliance_flags: JSON.stringify(aiData.compliance_flags || []),
+      compliance_flags: aiData.compliance_flags || [],
     };
+
+    // Map prospect extraction fields to BigQuery columns
+    if (aiData.prospect_goals) updates.goals = aiData.prospect_goals;
+    if (aiData.prospect_pains) updates.pains = aiData.prospect_pains;
+    if (aiData.prospect_situation) updates.situation = aiData.prospect_situation;
 
     // Add individual scores
     for (const [key, value] of Object.entries(aiData.scores)) {
