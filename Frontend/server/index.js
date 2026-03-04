@@ -50,6 +50,13 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/backend', require('./routes/backendProxy'));
 app.use('/api/jobs', require('./routes/jobs'));
 app.use('/api/partner', require('./routes/partner'));
+// Activity tracking — supports sendBeacon (token as query param since Beacon can't set headers)
+app.use('/api/activity', (req, res, next) => {
+  if (req.query._token && !req.headers['x-client-token']) {
+    req.headers['x-client-token'] = req.query._token;
+  }
+  next();
+}, require('./middleware/clientIsolation'), require('./routes/activity'));
 
 // ── Static File Serving (Production) ──────────────────────────
 // In production, serve the built React SPA from client/dist

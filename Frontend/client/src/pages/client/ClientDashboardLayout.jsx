@@ -19,10 +19,14 @@ import { COLORS } from '../../theme/constants';
 import { useAuth } from '../../context/AuthContext';
 import { FilterProvider } from '../../context/FilterContext';
 import DashboardShell from '../../components/layout/DashboardShell';
+import usePageTracking from '../../hooks/usePageTracking';
 
 export default function ClientDashboardLayout() {
   const { token } = useParams();
   const { isAuthenticated, isLoading, error, tier, companyName, mode, validateClientToken } = useAuth();
+
+  // Track page views, session starts, and time on page
+  usePageTracking();
 
   // Track which token we've already validated to prevent double-validation
   // (React StrictMode re-invokes effects, which would flash a loading spinner).
