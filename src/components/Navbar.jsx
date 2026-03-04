@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import GooeyNav from './GooeyNav'
+import { useDemoModal } from '../hooks/useDemoModal'
 
 const Navbar = () => {
+  const { openModal } = useDemoModal()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const navigate = useNavigate()
@@ -63,25 +65,14 @@ const Navbar = () => {
           <GooeyNav items={navItems} />
         </div>
 
-        <motion.a
-          href="#cta"
+        <motion.button
           className="nav-cta"
-          onClick={(e) => {
-            e.preventDefault()
-            if (location.pathname !== '/') {
-              navigate('/#cta')
-            } else {
-              const target = document.querySelector('#cta')
-              if (target) {
-                target.scrollIntoView({ behavior: 'smooth' })
-              }
-            }
-          }}
+          onClick={openModal}
           whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(0, 255, 136, 0.5)' }}
           whileTap={{ scale: 0.95 }}
         >
-          Join Waitlist
-        </motion.a>
+          Book a Demo
+        </motion.button>
 
         <button
           className="mobile-menu-toggle"
@@ -120,24 +111,15 @@ const Navbar = () => {
                 {item.label}
               </motion.a>
             ))}
-            <a
-              href="#cta"
+            <button
               className="mobile-cta"
               onClick={(e) => {
-                e.preventDefault()
                 setIsMobileMenuOpen(false)
-                if (location.pathname !== '/') {
-                  navigate('/#cta')
-                } else {
-                  const target = document.querySelector('#cta')
-                  if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' })
-                  }
-                }
+                openModal(e)
               }}
             >
-              Join Waitlist
-            </a>
+              Book a Demo
+            </button>
           </motion.div>
         )}
       </AnimatePresence>

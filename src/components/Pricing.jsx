@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
+import { useDemoModal } from '../hooks/useDemoModal'
 
 const tiers = [
-  { name: 'Basic', price: '$5,000', period: '/yr', foundersPrice: '$2,500', cta: 'Join Waitlist', featured: false },
-  { name: 'Insight', price: '+$75', period: '/closer /mo', foundersPrice: '+$50', cta: 'Join Waitlist', featured: false },
+  { name: 'Basic', price: '$5,000', period: '/yr', foundersPrice: '$2,500', cta: 'Book a Demo', featured: false },
+  { name: 'Insight', price: '+$75', period: '/closer /mo', foundersPrice: '+$50', cta: 'Book a Demo', featured: false },
   { name: 'Executive', price: '+$2,500', period: '/yr', foundersPrice: 'Free Upgrade', cta: 'Apply Now', featured: true },
 ]
 
@@ -76,6 +77,8 @@ const CellValue = ({ value }) => {
 }
 
 const Pricing = () => {
+  const { openModal } = useDemoModal()
+
   return (
     <section id="pricing" className="pricing-section">
       <div className="container">
@@ -127,14 +130,14 @@ const Pricing = () => {
                           <span className="founders-price">{tier.foundersPrice}</span>
                           {tier.foundersPrice !== 'Free Upgrade' && tier.period && <span className="founders-period">{tier.period}</span>}
                         </div>
-                        <motion.a
-                          href="#cta"
+                        <motion.button
+                          onClick={openModal}
                           className={`btn ${tier.featured ? 'btn-primary' : 'btn-outline'} pricing-table-cta`}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
                           {tier.cta}
-                        </motion.a>
+                        </motion.button>
                       </div>
                     </th>
                   ))}

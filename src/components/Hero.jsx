@@ -2,8 +2,10 @@ import { motion } from 'framer-motion'
 import { GradualBlurText } from './GradualBlur'
 import Dashboard from './Dashboard'
 import StarBorder from './StarBorder'
+import { useDemoModal } from '../hooks/useDemoModal'
 
 const Hero = () => {
+  const { openModal } = useDemoModal()
   return (
     <section className="hero">
       <div className="hero-content">
@@ -63,18 +65,18 @@ const Hero = () => {
           transition={{ duration: 0.6, delay: 0.6 }}
         >
           <StarBorder color="#00ff88" speed={4} borderRadius="12px">
-            <motion.a
-              href="#cta"
+            <motion.button
               className="btn btn-primary"
+              onClick={openModal}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
             >
-              <span>Join the Founders Waitlist</span>
+              <span>Book a Demo</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
-            </motion.a>
+            </motion.button>
           </StarBorder>
 
           <motion.a

@@ -1,25 +1,8 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
+import { useDemoModal } from '../hooks/useDemoModal'
 
 const CTA = () => {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState('idle') // idle, loading, success
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (!email) return
-
-    setStatus('loading')
-
-    // Simulate API call
-    setTimeout(() => {
-      setStatus('success')
-      setTimeout(() => {
-        setStatus('idle')
-        setEmail('')
-      }, 3000)
-    }, 1500)
-  }
+  const { openModal } = useDemoModal()
 
   return (
     <section id="cta" className="cta-section">
@@ -47,75 +30,18 @@ const CTA = () => {
           <h2>Ready to Make <span className="gradient-text">Data-Driven</span> Decisions?</h2>
           <p>Join the sales teams that stopped guessing and started knowing.</p>
 
-          <form className="cta-form" onSubmit={handleSubmit}>
-            <motion.div
-              className="input-wrapper"
-              whileFocus={{ scale: 1.02 }}
-            >
-              <input
-                type="email"
-                placeholder="Enter your work email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={status !== 'idle'}
-                required
-              />
-            </motion.div>
-
-            <AnimatePresence mode="wait">
-              {status === 'idle' && (
-                <motion.button
-                  key="submit"
-                  type="submit"
-                  className="btn btn-primary"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  whileHover={{ scale: 1.05, boxShadow: '0 20px 60px rgba(0, 255, 136, 0.4)' }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Join the Founders Waitlist
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </motion.button>
-              )}
-
-              {status === 'loading' && (
-                <motion.button
-                  key="loading"
-                  className="btn btn-primary"
-                  disabled
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                >
-                  <motion.div
-                    className="spinner"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                  />
-                  Processing...
-                </motion.button>
-              )}
-
-              {status === 'success' && (
-                <motion.button
-                  key="success"
-                  className="btn btn-success"
-                  disabled
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M5 13l4 4L19 7"/>
-                  </svg>
-                  You're on the list!
-                </motion.button>
-              )}
-            </AnimatePresence>
-          </form>
+          <motion.button
+            className="btn btn-primary"
+            onClick={openModal}
+            whileHover={{ scale: 1.05, boxShadow: '0 20px 60px rgba(0, 255, 136, 0.4)' }}
+            whileTap={{ scale: 0.95 }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '24px' }}
+          >
+            Book a Demo
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </motion.button>
 
           <motion.p
             className="cta-note"

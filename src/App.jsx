@@ -13,6 +13,8 @@ import ZeroAdmin from './components/ZeroAdmin'
 import RevenueCalculator from './components/RevenueCalculator'
 import CTA from './components/CTA'
 import Footer from './components/Footer'
+import DemoModal from './components/DemoModal'
+import { DemoModalProvider } from './hooks/useDemoModal'
 
 function HomePage({ logoItems }) {
   return (
@@ -175,36 +177,40 @@ function App() {
   ]
 
   return (
-    <div className="app">
-      <Aurora colorStops={["#3A29FF", "#FF94B4", "#FF3232"]} blend={1} amplitude={0}/>
-      <ShapeBlur
-        color1="#00ff88"
-        color2="#00d4ff"
-        color3="#6366f1"
-        blur={100}
-        opacity={0.2}
-      />
+    <DemoModalProvider>
+      <div className="app">
+        <Aurora colorStops={["#3A29FF", "#FF94B4", "#FF3232"]} blend={1} amplitude={0}/>
+        <ShapeBlur
+          color1="#00ff88"
+          color2="#00d4ff"
+          color3="#6366f1"
+          blur={100}
+          opacity={0.2}
+        />
 
-      <AnimatePresence>
-        {isLoaded && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <ScrollToTop />
-            <Navbar />
-            <main>
-              <Routes>
-                <Route path="/" element={<HomePage logoItems={logoItems} />} />
-                <Route path="/pricing" element={<PricingPage />} />
-              </Routes>
-            </main>
-            <Footer />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+        <AnimatePresence>
+          {isLoaded && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <ScrollToTop />
+              <Navbar />
+              <main>
+                <Routes>
+                  <Route path="/" element={<HomePage logoItems={logoItems} />} />
+                  <Route path="/pricing" element={<PricingPage />} />
+                </Routes>
+              </main>
+              <Footer />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <DemoModal />
+      </div>
+    </DemoModalProvider>
   )
 }
 
