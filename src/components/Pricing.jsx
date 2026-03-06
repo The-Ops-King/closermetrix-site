@@ -121,15 +121,6 @@ const Pricing = () => {
                       <div className="pricing-table-tier-header">
                         {tier.badge && <span className="pricing-table-badge">{tier.badge}</span>}
                         <h3>{tier.name}</h3>
-                        <div className="pricing-table-price">
-                          <span className="pricing-table-amount strikethrough">{tier.price}</span>
-                          {tier.period && <span className="pricing-table-period strikethrough">{tier.period}</span>}
-                        </div>
-                        <div className="pricing-table-founders">
-                          <span className="founders-label">Founders</span>
-                          <span className="founders-price">{tier.foundersPrice}</span>
-                          {tier.foundersPrice !== 'Free Upgrade' && tier.period && <span className="founders-period">{tier.period}</span>}
-                        </div>
                         <motion.button
                           onClick={openModal}
                           className={`btn ${tier.featured ? 'btn-primary' : 'btn-outline'} pricing-table-cta`}
