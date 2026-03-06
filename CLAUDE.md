@@ -1,5 +1,13 @@
 # CloserMetrix Landing Page
 
+## Deployment
+
+**Remote repo:** `The-Ops-King/closermetrix-site` (NOT `closerMetrix`)
+
+Push to `main` triggers GitHub Actions → GitHub Pages → closermetrix.com
+
+Do NOT push to `The-Ops-King/closerMetrix` — that is the wrong repo.
+
 ## Dev Server
 
 Always run the Vite dev server on **port 3000**:
