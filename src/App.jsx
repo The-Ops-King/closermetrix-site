@@ -167,14 +167,14 @@ function HowItWorksPage() {
                 desc: 'We connect to your closers\' calendars to track show rates, no-shows, and scheduling patterns automatically.',
               },
               {
-                icon: '💰',
-                title: 'Financial Data',
-                desc: 'Revenue, cash collected, and deal values flow in so you see the real dollars behind every metric.',
-              },
-              {
                 icon: '🧠',
                 title: 'AI-Powered Call Analysis',
                 desc: 'Every recorded call is automatically transcribed, broken into phases, and scored by professionally engineered AI — extracting objections, flagging compliance risks, and surfacing coaching insights.',
+              },
+              {
+                icon: '💰',
+                title: 'Financial Data',
+                desc: 'Revenue, cash collected, and deal values flow in so you see the real dollars behind every metric.',
               },
             ].map((item, index) => (
               <motion.div
