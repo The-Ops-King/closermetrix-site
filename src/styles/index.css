@@ -1045,6 +1045,20 @@ h3 { font-size: clamp(1.25rem, 2vw, 1.5rem); }
   border-color: var(--aurora-green);
 }
 
+/* ===== HOW WE DO IT SECTION ===== */
+.how-we-do-it {
+  padding: 80px 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== PROBLEMS SOLVED SECTION ===== */
+.problems-solved {
+  padding: 60px 0 100px;
+  position: relative;
+  z-index: 1;
+}
+
 /* ===== EVERY CALL SECTION ===== */
 .every-call-section {
   padding: 80px 0 40px;

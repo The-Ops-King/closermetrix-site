@@ -7,7 +7,7 @@ import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import LogoLoop from './components/LogoLoop'
 import Features from './components/Features'
-import HowItWorks from './components/HowItWorks'
+import HowItWorks, { VideoPlayer } from './components/HowItWorks'
 import Pricing from './components/Pricing'
 import ZeroAdmin from './components/ZeroAdmin'
 import RevenueCalculator from './components/RevenueCalculator'
@@ -129,24 +129,205 @@ function HowItWorksPage() {
             <h2>Every Call, Fully <span className="gradient-text">Analyzed</span></h2>
             <p>Your closers are already on the phone. We make sure no insight gets left behind.</p>
           </motion.div>
-          <motion.div
-            className="video-wrapper"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <div className="video-placeholder">
-              <div className="video-play-btn">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="var(--aurora-green)">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-            </div>
-          </motion.div>
+          <VideoPlayer />
         </div>
       </section>
-      <Pricing />
+      {/* <Pricing /> */}
+
+      <section className="how-we-do-it">
+        <div className="container">
+          <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <span className="badge">How We Do It</span>
+            <h2>Set Up in 20 Minutes. <span className="gradient-text">Insights by Tomorrow.</span></h2>
+            <p style={{ maxWidth: '720px', margin: '0 auto' }}>
+              Connect your closers' calendar, finances, and call recordings — that's it. Our AI handles
+              the rest, breaking down every section of your sales process with extreme accuracy using
+              prompts engineered by professionals. No training. No onboarding. No disruption.
+            </p>
+          </motion.div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+            gap: '1.5rem',
+            marginTop: '3rem',
+          }}>
+            {[
+              {
+                icon: '📅',
+                title: 'Calendar Integration',
+                desc: 'We connect to your closers\' calendars to track show rates, no-shows, and scheduling patterns automatically.',
+              },
+              {
+                icon: '💰',
+                title: 'Financial Data',
+                desc: 'Revenue, cash collected, and deal values flow in so you see the real dollars behind every metric.',
+              },
+              {
+                icon: '🎙️',
+                title: 'Call Transcription',
+                desc: 'Every recorded call is transcribed and broken into phases — opening, discovery, pitch, objection handling, and close.',
+              },
+              {
+                icon: '🧠',
+                title: 'AI Analysis',
+                desc: 'Professionally engineered prompts score each call section, extract objections, flag compliance risks, and surface coaching insights.',
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '16px',
+                  padding: '2rem',
+                  textAlign: 'center',
+                  transition: 'border-color 0.3s, background 0.3s',
+                }}
+                whileHover={{
+                  borderColor: 'rgba(99, 102, 241, 0.3)',
+                  background: 'rgba(99, 102, 241, 0.05)',
+                }}
+              >
+                <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>{item.icon}</div>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 600, color: '#fff', marginBottom: '0.75rem' }}>{item.title}</h3>
+                <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.6)', lineHeight: 1.6, margin: 0 }}>{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="problems-solved">
+        <div className="container">
+          <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <span className="badge">Results</span>
+            <h2>10 Ways CloserMetrix <span className="gradient-text">Levels Up</span> Your Team</h2>
+          </motion.div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 480px), 1fr))',
+            gap: '1.5rem',
+            marginTop: '3rem',
+          }}>
+            {[
+              {
+                num: '01',
+                title: 'Closers spend more time selling',
+                desc: 'By eliminating forms, CRM updates, and manual logging, your closers get back 45+ minutes per day to take more calls and close more deals.',
+              },
+              {
+                num: '02',
+                title: 'Increase close rate with data-driven coaching',
+                desc: 'Every call is scored by phase — opening, discovery, pitch, objection handling, close — so you coach on the exact skills that move the needle.',
+              },
+              {
+                num: '03',
+                title: 'See exactly where deals are won and lost',
+                desc: 'AI pinpoints the exact moments prospects engage or disengage, broken down by objection type, closer, and call phase.',
+              },
+              {
+                num: '04',
+                title: 'Automatically capture every call detail',
+                desc: 'Every call is transcribed, scored, and logged without your closers lifting a finger. No more chasing reps for notes.',
+              },
+              {
+                num: '05',
+                title: 'Identify and replicate your top performers',
+                desc: 'Side-by-side benchmarking shows exactly what your best closers do differently — so you can train the rest of the team to match.',
+              },
+              {
+                num: '06',
+                title: 'Review only the calls that matter',
+                desc: 'AI flags the specific calls worth your attention and tells you exactly why — spend minutes instead of hours on review.',
+              },
+              {
+                num: '07',
+                title: 'Maximize show rates and recover lost revenue',
+                desc: 'Calendar + finance integration gives you real-time show rates, no-show patterns, and the exact dollars being left on the table.',
+              },
+              {
+                num: '08',
+                title: 'Stay ahead of compliance risk',
+                desc: 'Automatic FTC/SEC language flagging with timestamps and full context — catch issues before they become problems.',
+              },
+              {
+                num: '09',
+                title: 'Catch emerging objections before they tank your numbers',
+                desc: 'Objection tracking detects new patterns the moment they appear, so you can update scripts and training proactively.',
+              },
+              {
+                num: '10',
+                title: 'Forecast revenue with confidence',
+                desc: 'AI-powered projections based on real pipeline data, pacing, and historical trends — so you always know where you stand.',
+              },
+            ].map((item, index) => (
+              <motion.div
+                key={item.num}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.08 }}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.03)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '16px',
+                  padding: '1.75rem',
+                  display: 'flex',
+                  gap: '1.25rem',
+                  alignItems: 'flex-start',
+                  transition: 'border-color 0.3s, background 0.3s',
+                }}
+                whileHover={{
+                  borderColor: 'rgba(99, 102, 241, 0.3)',
+                  background: 'rgba(99, 102, 241, 0.05)',
+                }}
+              >
+                <span style={{
+                  fontFamily: 'monospace',
+                  fontSize: '1.5rem',
+                  fontWeight: 700,
+                  color: 'var(--aurora-purple, #8b5cf6)',
+                  lineHeight: 1,
+                  flexShrink: 0,
+                  marginTop: '2px',
+                }}>{item.num}</span>
+                <div>
+                  <h3 style={{
+                    fontSize: '1.1rem',
+                    fontWeight: 600,
+                    color: '#fff',
+                    marginBottom: '0.5rem',
+                  }}>{item.title}</h3>
+                  <p style={{
+                    fontSize: '0.95rem',
+                    color: 'rgba(255, 255, 255, 0.6)',
+                    lineHeight: 1.6,
+                    margin: 0,
+                  }}>{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   )
 }
