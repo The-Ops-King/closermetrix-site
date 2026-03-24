@@ -154,9 +154,11 @@ function HowItWorksPage() {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+            gridTemplateColumns: 'repeat(3, 1fr)',
             gap: '1.5rem',
             marginTop: '3rem',
+            maxWidth: '900px',
+            margin: '3rem auto 0',
           }}>
             {[
               {
@@ -170,14 +172,9 @@ function HowItWorksPage() {
                 desc: 'Revenue, cash collected, and deal values flow in so you see the real dollars behind every metric.',
               },
               {
-                icon: '🎙️',
-                title: 'Call Transcription',
-                desc: 'Every recorded call is transcribed and broken into phases — opening, discovery, pitch, objection handling, and close.',
-              },
-              {
                 icon: '🧠',
-                title: 'AI Analysis',
-                desc: 'Professionally engineered prompts score each call section, extract objections, flag compliance risks, and surface coaching insights.',
+                title: 'AI-Powered Call Analysis',
+                desc: 'Every recorded call is automatically transcribed, broken into phases, and scored by professionally engineered AI — extracting objections, flagging compliance risks, and surfacing coaching insights.',
               },
             ].map((item, index) => (
               <motion.div
