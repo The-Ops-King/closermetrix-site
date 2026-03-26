@@ -56,9 +56,9 @@ const Footer = () => {
                 navigate('/')
               }}
             >
-              <img src="/logo-full.png" alt="CloserMetrix" className="logo-img-full" />
+              <img src="/logo-full.png" alt="CloserMetrix - Sales Intelligence for High-Ticket Sales Teams" className="logo-img-full" />
             </a>
-            <p>Sales intelligence for high-ticket teams.</p>
+            <p>AI-powered sales coaching, call scoring, and conversation intelligence for high-ticket sales teams.</p>
           </motion.div>
 
           <div className="footer-links">

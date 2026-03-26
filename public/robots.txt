@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://closermetrix.com/sitemap.xml

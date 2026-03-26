@@ -210,16 +210,16 @@ const steps = [
   {
     number: '02',
     title: 'AI Analyzes Every Call',
-    description: 'Our system automatically processes recordings, transcribes, and extracts key metrics.',
+    description: 'Our AI automatically transcribes every call, scores each component, tracks objections, and flags compliance risks — like having a sales coaching tool reviewing 100% of your calls.',
   },
   {
     number: '03',
     title: 'Get Actionable Insights',
-    description: 'Within 24 hours, access dashboards showing exactly where to focus your coaching.',
+    description: 'Within 24 hours, your sales rep performance dashboard shows exactly where to coach. See close rate benchmarks, objection patterns, and which reps need help on which call components.',
   },
 ]
 
-const HowItWorks = () => {
+const HowItWorks = ({ hideVideo = false }) => {
   return (
     <section id="how-it-works" className="how-it-works">
       <div className="container">
@@ -231,11 +231,11 @@ const HowItWorks = () => {
           transition={{ duration: 0.8 }}
         >
           <span className="badge">How It Works</span>
-          <h2>From Calls to Insights in <span className="gradient-text">3 Steps</span></h2>
+          <h2>From Sales Calls to AI Coaching Insights in <span className="gradient-text">3 Steps</span></h2>
           <p>No complex setup. No team training. Just connect and go.</p>
         </motion.div>
 
-        <VideoPlayer />
+        {!hideVideo && <VideoPlayer />}
 
         <div className="steps-container">
           {steps.map((step, index) => (

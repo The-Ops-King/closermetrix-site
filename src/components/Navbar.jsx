@@ -57,7 +57,7 @@ const Navbar = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <img src="/logo.png" alt="CloserMetrix" className="logo-img" />
+          <img src="/logo.png" alt="CloserMetrix - AI Sales Coaching & Call Scoring Platform" className="logo-img" />
         </motion.a>
 
         {/* Gooey Nav for desktop */}

@@ -49,8 +49,8 @@ function HomePage({ logoItems }) {
             transition={{ duration: 0.8 }}
           >
             <span className="badge">Why CloserMetrix</span>
-            <h2>Every Call, Fully <span className="gradient-text">Analyzed</span></h2>
-            <p>Your closers are already on the phone. We make sure no insight gets left behind.</p>
+            <h2>Every Sales Call, Fully <span className="gradient-text">Scored and Analyzed by AI</span></h2>
+            <p>Your team is already on the phone. We make sure every call becomes a coaching opportunity — automatically.</p>
           </motion.div>
 
           <div className="every-call-cards">
@@ -67,7 +67,7 @@ function HomePage({ logoItems }) {
                 </svg>
               </div>
               <h3>Call Component Scoring</h3>
-              <p>Every call is broken down into component parts — opening, discovery, pitch, objection handling, close — each judged and scored individually.</p>
+              <p>Every call is broken down and scored across 5 key components — opening, discovery, pitch, objection handling, and close — giving you a data-driven sales coaching scorecard for every single conversation.</p>
             </motion.div>
 
             <motion.div
@@ -82,8 +82,8 @@ function HomePage({ logoItems }) {
                   <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <h3>Objection Tracking by Closer</h3>
-              <p>Track every individual objection down to the specific closer. See who handles what objections best, and who needs coaching on which areas.</p>
+              <h3>Objection Tracking by Rep</h3>
+              <p>Track every sales objection down to the specific rep. See who handles price, timing, and trust objections best — and know exactly who needs coaching on what.</p>
             </motion.div>
 
             <motion.div
@@ -99,7 +99,7 @@ function HomePage({ logoItems }) {
                 </svg>
               </div>
               <h3>Compliance Monitoring</h3>
-              <p>Quietly monitors risk language before it becomes a problem.</p>
+              <p>Sales call compliance monitoring that quietly flags FTC and SEC risk language — income claims, missing disclosures, and prohibited tactics — before they become expensive problems.</p>
             </motion.div>
           </div>
         </div>
@@ -107,7 +107,7 @@ function HomePage({ logoItems }) {
 
       <ZeroAdmin />
       <RevenueCalculator />
-      <HowItWorks />
+      <HowItWorks hideVideo />
       <CTA />
     </>
   )
@@ -126,8 +126,8 @@ function HowItWorksPage() {
             transition={{ duration: 0.8 }}
           >
             <span className="badge">See It In Action</span>
-            <h2>Every Call, Fully <span className="gradient-text">Analyzed</span></h2>
-            <p>Your closers are already on the phone. We make sure no insight gets left behind.</p>
+            <h2>Every Sales Call, Fully <span className="gradient-text">Scored and Analyzed by AI</span></h2>
+            <p>Your team is already on the phone. We make sure every call becomes a coaching opportunity — automatically.</p>
           </motion.div>
           <VideoPlayer />
         </div>

@@ -42,7 +42,7 @@ const faqCategories = [
     items: [
       {
         q: 'What does CloserMetrix actually show me?',
-        a: 'Depending on your tier, you get access to:\n\n• Business-level metrics: show rates, close rates, sales cycle length, week-over-week trends\n• Closer-level performance comparisons: who\'s closing, who\'s struggling, and why\n• Objection intelligence: which objections are showing up, how often, and whether they\'re being resolved\n• Timestamped call examples: filter by objection type or closer and pull a list of 15–20 real calls to review\n• Script adherence scores, quality scoring, and revenue projections',
+        a: 'Depending on your tier, you get access to:\n\n• Sales rep performance dashboard: close rates, show rates, sales cycle length, and week-over-week trends with close rate benchmarks\n• Sales rep scorecards: compare every rep side-by-side across every sales KPI that matters\n• Objection intelligence: which objections are showing up, how often, and whether they\'re being resolved\n• Timestamped call examples: filter by objection type or rep and pull a list of 15–20 real calls to review\n• AI call scoring, script adherence scores, compliance monitoring, and revenue projections',
       },
       {
         q: "What's objection intelligence, and why does it matter?",
@@ -58,8 +58,8 @@ const faqCategories = [
     title: 'Comparisons',
     items: [
       {
-        q: 'How does CloserMetrix compare to Gong?',
-        a: 'Gong is an excellent tool — but it\'s built for enterprise SaaS sales teams, and it has a fundamental limitation that matters a lot for high-ticket call businesses: to get insight on any specific call or closer, you have to go into each recording individually. Gong doesn\'t surface aggregated per-closer or per-call intelligence across your whole team automatically.\n\nCloserMetrix works the other way around. You see patterns across your entire team first — which objections are spiking, which closers are struggling, how your numbers are trending — and then you can drill down to the specific calls that matter. It\'s also purpose-built for high-ticket call-based businesses where calls are longer, more emotional, and objection-heavy. We\'re not trying to be Gong for enterprise. We\'re the tool your team actually needs, at a fraction of the complexity and cost.',
+        q: 'How does CloserMetrix compare to enterprise conversation intelligence platforms?',
+        a: 'Most conversation intelligence platforms are built for enterprise SaaS sales teams with hundreds of reps. They focus on deal intelligence and pipeline forecasting — not closer-level coaching, objection tracking, or compliance monitoring.\n\nCloserMetrix works differently. You see patterns across your entire team first — which objections are spiking, which reps are struggling, how your numbers are trending — and then you can drill down to the specific calls that matter. It\'s purpose-built for high-ticket, call-based businesses where calls are longer, more emotional, and objection-heavy. Component-level call scoring, sales rep scorecards, and automated compliance monitoring come standard — not as enterprise add-ons.',
       },
       {
         q: 'Does CloserMetrix replace my CRM?',
@@ -168,7 +168,7 @@ const FAQ = () => {
         >
           <span className="badge">FAQ</span>
           <h2>Frequently Asked <span className="gradient-text">Questions</span></h2>
-          <p>Everything you need to know about CloserMetrix</p>
+          <p>Everything you need to know about AI-powered sales call scoring, objection tracking, and conversation intelligence for high-ticket teams</p>
         </motion.div>
 
         <div className="faq-categories">

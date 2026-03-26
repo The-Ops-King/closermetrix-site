@@ -90,8 +90,8 @@ const Pricing = () => {
           transition={{ duration: 0.8 }}
         >
           <span className="badge cyan">Pricing</span>
-          <h2>Choose Your Level of <span className="gradient-text">Intelligence</span></h2>
-          <p>Only those serious about growing their business make it to Executive.</p>
+          <h2>Choose Your Level of <span className="gradient-text">Sales Coaching Intelligence</span></h2>
+          <p>AI-powered sales coaching and call analytics for teams who are serious about improving their close rate.</p>
         </motion.div>
 
         <motion.p

@@ -16,7 +16,7 @@ const Hero = () => {
           transition={{ duration: 0.5 }}
         >
           <span className="pulse"></span>
-          AI-Powered Sales Intelligence
+          AI-Powered Sales Coaching Intelligence
         </motion.div>
 
         <h1>
@@ -53,7 +53,7 @@ const Hero = () => {
           transition={{ duration: 0.6, delay: 0.4 }}
         >
           <GradualBlurText
-            text="CloserMetrix automatically analyzes your sales calls and delivers actionable insights within 24 hours. No manual input required."
+            text="The AI sales coaching platform that automatically scores every call, tracks objections by rep, and shows you exactly how to improve your close rate — no manual input, no guesswork."
             delay={0.5}
           />
         </motion.p>
@@ -95,11 +95,11 @@ const Hero = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          <Stat number="45" suffix=" min" label="Saved daily per closer" delay={0.9} />
+          <Stat number="45" suffix=" min" label="Of admin time saved per rep" delay={0.9} />
           <div className="stat-divider" />
-          <Stat number="24" suffix=" hrs" label="To first insights" delay={1.0} />
+          <Stat number="24" suffix=" hrs" label="To first coaching insights" delay={1.0} />
           <div className="stat-divider" />
-          <Stat number="100" suffix="%" label="Automatic analysis" delay={1.1} />
+          <Stat number="100" suffix="%" label="Of calls scored by AI" delay={1.1} />
         </motion.div>
       </div>
 

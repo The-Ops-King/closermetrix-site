@@ -27,8 +27,8 @@ const CTA = () => {
             }}
           />
 
-          <h2>Ready to Make <span className="gradient-text">Data-Driven</span> Decisions?</h2>
-          <p>Join the sales teams that stopped guessing and started knowing.</p>
+          <h2>Ready to Improve Your Close Rate With <span className="gradient-text">AI Sales Coaching</span>?</h2>
+          <p>Join the high-ticket sales teams that replaced gut-feel management with AI-powered conversation intelligence.</p>
 
           <motion.button
             className="btn btn-primary"
