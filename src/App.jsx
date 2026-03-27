@@ -342,10 +342,12 @@ function ScrollToTop() {
 }
 
 function App() {
-  const [isLoaded, setIsLoaded] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(() => {
+    return typeof document !== 'undefined' && document.getElementById('root')?.hasChildNodes() || false
+  })
 
   useEffect(() => {
-    setIsLoaded(true)
+    if (!isLoaded) setIsLoaded(true)
   }, [])
 
   const logoItems = [
