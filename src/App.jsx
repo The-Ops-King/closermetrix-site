@@ -15,6 +15,9 @@ import CTA from './components/CTA'
 import Footer from './components/Footer'
 import FAQ from './components/FAQ'
 import DemoModal from './components/DemoModal'
+import OnboardingSelect from './components/OnboardingSelect'
+import OnboardingTldv from './components/OnboardingTldv'
+import OnboardingFathom from './components/OnboardingFathom'
 import { DemoModalProvider } from './hooks/useDemoModal'
 
 function HomePage({ logoItems }) {
@@ -387,6 +390,9 @@ function App() {
                   <Route path="/" element={<HomePage logoItems={logoItems} />} />
                   <Route path="/how-it-works" element={<HowItWorksPage />} />
                   <Route path="/faq" element={<FAQPage />} />
+                  <Route path="/onboarding" element={<OnboardingSelect />} />
+                  <Route path="/onboarding/tldv" element={<OnboardingTldv />} />
+                  <Route path="/onboarding/fathom" element={<OnboardingFathom />} />
                 </Routes>
               </main>
               <Footer />
