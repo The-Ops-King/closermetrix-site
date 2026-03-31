@@ -41,7 +41,7 @@ const steps = [
           <li>Click <strong>Add Webhook</strong> (or "Create Webhook")</li>
           <li>Set the <strong>Webhook URL</strong> to:</li>
         </ol>
-        <CopyBlock text="https://closermetrix-api-b4x4dur6ha-uc.a.run.app/webhooks/transcript/tldv" />
+        <CopyBlock text="https://api.closermetrix.com/webhooks/transcript/tldv" />
         <ol className="step-instructions" start={4}>
           <li><strong>Enable BOTH of these events:</strong>
             <ul style={{ marginTop: '6px', marginBottom: '6px' }}>
@@ -135,7 +135,7 @@ const steps = [
         <p className="step-context">Set up a webhook from your payment processor (Stripe, PayPal, etc.) or CRM automation tool (GHL, Zapier, Make, etc.) to send payment data to CloserMetrix.</p>
 
         <h4 style={{ color: 'var(--text-primary)', marginBottom: '12px' }}>Webhook URL</h4>
-        <CopyBlock text="https://closermetrix-api-b4x4dur6ha-uc.a.run.app/webhooks/payment" />
+        <CopyBlock text="https://api.closermetrix.com/webhooks/payment" />
 
         <h4 style={{ color: 'var(--text-primary)', margin: '20px 0 12px' }}>Required Headers</h4>
         <div className="webhook-table">

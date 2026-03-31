@@ -110,7 +110,7 @@ const steps = [
           <li><strong>Action:</strong> Webhooks by Zapier → <strong>POST</strong> request</li>
           <li><strong>URL:</strong></li>
         </ol>
-        <CopyBlock text="https://closermetrix-api-b4x4dur6ha-uc.a.run.app/webhooks/payment" />
+        <CopyBlock text="https://api.closermetrix.com/webhooks/payment" />
 
         <h4>Required Headers</h4>
         <div className="webhook-table">
