@@ -17,7 +17,10 @@ async function prerender() {
     preview: { port: 4173, strictPort: true },
   });
 
-  const browser = await puppeteer.launch({ headless: 'new' });
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
 
   for (const route of routes) {
     const page = await browser.newPage();
