@@ -36,3 +36,5 @@ npm-debug.log*
 
 # Test coverage
 coverage/
+dist/
+node_modules/
