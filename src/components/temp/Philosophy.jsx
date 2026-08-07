@@ -12,7 +12,7 @@ const Philosophy = () => {
           transition={{ duration: 0.8 }}
         >
           <h2>
-            We don't make decisions.
+            We don't make decisions.{' '}
             <span className="headline-break gradient-text">We surface evidence.</span>
           </h2>
         </motion.div>

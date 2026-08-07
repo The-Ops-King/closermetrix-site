@@ -8,8 +8,9 @@ const groups = [
 
 const Integrations = () => {
   return (
-    <section id="integrations" className="integrations-section">
+    <section id="integrations" className="integrations-section" aria-labelledby="integrations-heading">
       <div className="container">
+        <h2 id="integrations-heading" className="integrations-heading">Works with what you already use</h2>
         <div className="integrations-row">
           {groups.map((group, index) => (
             <motion.div
@@ -21,11 +22,11 @@ const Integrations = () => {
               transition={{ duration: 0.4, delay: index * 0.08 }}
             >
               <span className="integration-label">{group.label}</span>
-              <div className="integration-items">
+              <ul className="integration-items">
                 {group.items.map((item) => (
-                  <span key={item} className="integration-chip">{item}</span>
+                  <li key={item} className="integration-chip">{item}</li>
                 ))}
-              </div>
+              </ul>
             </motion.div>
           ))}
         </div>

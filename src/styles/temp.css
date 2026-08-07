@@ -8,6 +8,12 @@
   display: block;
 }
 
+/* Card grids are marked up as lists so text extractors read them as lists;
+   strip the list chrome, the cards supply their own. */
+.temp-page ul {
+  list-style: none;
+}
+
 /* Clear the fixed navbar, and keep the headline to two lines at 1440px. */
 .temp-page .hero {
   min-height: auto;
@@ -707,6 +713,16 @@
   padding: 40px 0 60px;
   position: relative;
   z-index: 1;
+}
+
+.integrations-heading {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
 }
 
 .integrations-row {

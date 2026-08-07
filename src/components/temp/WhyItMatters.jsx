@@ -63,9 +63,9 @@ const WhyItMatters = () => {
           <h2>Better conversations create <span className="gradient-text">better decisions.</span></h2>
         </motion.div>
 
-        <div className="why-grid">
+        <ul className="why-grid">
           {roles.map((role, index) => (
-            <motion.div
+            <motion.li
               key={role.title}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -81,9 +81,9 @@ const WhyItMatters = () => {
                   <p>{role.description}</p>
                 </div>
               </SpotlightCard>
-            </motion.div>
+            </motion.li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   )

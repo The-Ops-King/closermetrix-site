@@ -60,8 +60,34 @@ async function scrollThrough(page) {
       await new Promise((r) => setTimeout(r, 50));
     }
     window.scrollTo(0, 0);
-    await new Promise((r) => setTimeout(r, 400));
+    // The last sections start animating latest — give every fade time to
+    // finish, otherwise they're captured at opacity 0 and text extractors
+    // treat them as hidden content.
+    await new Promise((r) => setTimeout(r, 2500));
   });
+}
+
+/*
+ * Warn if content is about to be captured at opacity 0. Decorative layers
+ * (glows, particles, spotlights) are expected to be transparent; anything
+ * else that's invisible is content a text extractor may drop.
+ */
+const DECORATIVE = /spotlight|border-glow|gooey|particle|cta-glow|dashboard-glow|star/i;
+
+async function reportHiddenContent(page, route) {
+  const hidden = await page.evaluate((decorativeSource) => {
+    const decorative = new RegExp(decorativeSource, 'i');
+    return [...document.querySelectorAll('[style*="opacity"]')]
+      .filter((el) => parseFloat(getComputedStyle(el).opacity) < 0.05)
+      .filter((el) => !decorative.test(el.className || ''))
+      .filter((el) => (el.textContent || '').trim().length > 0)
+      .map((el) => `${el.className || el.tagName}: ${el.textContent.trim().slice(0, 50)}`);
+  }, DECORATIVE.source);
+
+  if (hidden.length) {
+    console.warn(`  ! ${route}: ${hidden.length} content element(s) captured at opacity 0`);
+    hidden.forEach((h) => console.warn(`      ${h}`));
+  }
 }
 
 async function applyMeta(page, route) {
@@ -97,6 +123,14 @@ async function applyMeta(page, route) {
     }
     canonical.href = site + path;
 
+    // Plain-text summary for agents that prefer it over parsing the page.
+    const alt = document.createElement('link');
+    alt.rel = 'alternate';
+    alt.type = 'text/markdown';
+    alt.href = '/llms.txt';
+    alt.title = 'Plain-text summary';
+    document.head.appendChild(alt);
+
     const ld = document.createElement('script');
     ld.type = 'application/ld+json';
     ld.textContent = JSON.stringify({ ...cfg.jsonLd, description: cfg.description });
@@ -129,6 +163,7 @@ async function prerender() {
     await new Promise((r) => setTimeout(r, 2000));
 
     await scrollThrough(page);
+    await reportHiddenContent(page, route);
     await applyMeta(page, route);
 
     // Get the fully rendered HTML

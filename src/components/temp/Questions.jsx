@@ -25,9 +25,9 @@ const Questions = () => {
           <h2>Questions CloserMetrix <span className="gradient-text">Answers</span></h2>
         </motion.div>
 
-        <div className="questions-grid">
+        <ul className="questions-grid">
           {questions.map((question, index) => (
-            <motion.div
+            <motion.li
               key={question}
               className="question-card"
               initial={{ opacity: 0, y: 24 }}
@@ -37,9 +37,9 @@ const Questions = () => {
             >
               <span className="question-mark">?</span>
               <span className="question-text">{question}</span>
-            </motion.div>
+            </motion.li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   )

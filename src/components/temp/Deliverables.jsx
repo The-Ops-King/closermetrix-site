@@ -42,9 +42,9 @@ const Deliverables = () => {
           Every call automatically becomes:
         </motion.p>
 
-        <div className="deliverables-grid">
+        <ul className="deliverables-grid">
           {perCall.map((item, index) => (
-            <motion.div
+            <motion.li
               key={item}
               className="deliverable"
               initial={{ opacity: 0, y: 20 }}
@@ -54,9 +54,9 @@ const Deliverables = () => {
             >
               <span className="deliverable-check"><Check /></span>
               {item}
-            </motion.div>
+            </motion.li>
           ))}
-        </div>
+        </ul>
 
         <div className="cadence-row">
           <motion.div

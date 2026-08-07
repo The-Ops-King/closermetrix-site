@@ -19,14 +19,14 @@ const WhyCompaniesStay = () => {
           transition={{ duration: 0.8 }}
         >
           <h2>
-            The longer you use CloserMetrix
+            The longer you use CloserMetrix,{' '}
             <span className="headline-break gradient-text">the smarter your business becomes.</span>
           </h2>
         </motion.div>
 
-        <div className="stay-grid">
+        <ul className="stay-grid">
           {effects.map((effect, index) => (
-            <motion.div
+            <motion.li
               key={effect.title}
               className="stay-card"
               initial={{ opacity: 0, y: 24 }}
@@ -36,9 +36,9 @@ const WhyCompaniesStay = () => {
             >
               <h3>{effect.title}</h3>
               <p>{effect.detail}</p>
-            </motion.div>
+            </motion.li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   )

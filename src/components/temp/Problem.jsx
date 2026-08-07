@@ -20,7 +20,7 @@ const Problem = () => {
           transition={{ duration: 0.8 }}
         >
           <h2>
-            Sales conversations generate revenue.
+            Sales conversations generate revenue.{' '}
             <span className="headline-break gradient-text">But most businesses throw them away.</span>
           </h2>
         </motion.div>
@@ -35,9 +35,9 @@ const Problem = () => {
           Every call contains:
         </motion.p>
 
-        <div className="problem-cards">
+        <ul className="problem-cards">
           {contents.map((item, index) => (
-            <motion.div
+            <motion.li
               key={item}
               className="problem-card"
               initial={{ opacity: 0, y: 24 }}
@@ -46,9 +46,9 @@ const Problem = () => {
               transition={{ duration: 0.45, delay: index * 0.08 }}
             >
               {item}
-            </motion.div>
+            </motion.li>
           ))}
-        </div>
+        </ul>
 
         <motion.p
           className="problem-closer"

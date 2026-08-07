@@ -191,9 +191,9 @@ const IntegrityAudit = () => {
           </p>
         </motion.div>
 
-        <div className="audit-highlights">
+        <ul className="audit-highlights">
           {highlights.map((item, index) => (
-            <motion.div
+            <motion.li
               key={item.label}
               className="audit-highlight"
               initial={{ opacity: 0, y: 24 }}
@@ -203,9 +203,9 @@ const IntegrityAudit = () => {
             >
               <span className="audit-highlight-label">{item.label}</span>
               <span className="audit-highlight-detail">{item.detail}</span>
-            </motion.div>
+            </motion.li>
           ))}
-        </div>
+        </ul>
 
         <div className="audit-pair">
           <motion.div

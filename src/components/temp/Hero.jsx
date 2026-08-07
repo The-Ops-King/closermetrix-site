@@ -40,6 +40,8 @@ const Hero = () => {
           >
             Turn Every Sales Call
           </motion.span>
+          {/* Explicit space: block spans concatenate in plain-text extraction. */}
+          {' '}
           <motion.span
             className="hero-title-line"
             initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
