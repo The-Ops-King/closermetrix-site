@@ -3,8 +3,8 @@ import { motion } from 'framer-motion'
 
 const tempProductLinks = [
   { name: 'How It Works', href: '#how-it-works' },
+  { name: 'What You Get', href: '#deliverables' },
   { name: 'Integrity Audit', href: '#integrity-audit' },
-  { name: 'Pricing', href: '#pricing' },
 ]
 
 const footerLinks = {
@@ -66,7 +66,11 @@ const Footer = () => {
             >
               <img src="/logo-full.png" alt="CloserMetrix - Sales Intelligence for High-Ticket Sales Teams" className="logo-img-full" />
             </a>
-            <p>AI-powered sales coaching, call scoring, and conversation intelligence for high-ticket sales teams.</p>
+            <p>
+              {isTemp
+                ? 'The Sales Intelligence Layer for high-ticket sales teams.'
+                : 'AI-powered sales coaching, call scoring, and conversation intelligence for high-ticket sales teams.'}
+            </p>
           </motion.div>
 
           <div className="footer-links">

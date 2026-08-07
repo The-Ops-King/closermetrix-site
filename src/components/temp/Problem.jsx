@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion'
 
-const measured = [
-  { label: 'Marketing', state: 'Measured' },
-  { label: 'Finance', state: 'Measured' },
-  { label: 'Operations', state: 'Measured' },
-  { label: 'Sales Calls', state: 'Black Box', dark: true },
+const contents = [
+  'Objections',
+  'Buyer language',
+  'Customer goals',
+  'Why deals were won',
+  'Why deals were lost',
 ]
 
 const Problem = () => {
@@ -18,22 +19,33 @@ const Problem = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <span className="badge">The Problem</span>
-          <h2>Stop Making Expensive Decisions With <span className="gradient-text">Incomplete Information</span></h2>
+          <h2>
+            Sales conversations generate revenue.
+            <span className="headline-break gradient-text">But most businesses throw them away.</span>
+          </h2>
         </motion.div>
 
+        <motion.p
+          className="problem-lede"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          Every call contains:
+        </motion.p>
+
         <div className="problem-cards">
-          {measured.map((item, index) => (
+          {contents.map((item, index) => (
             <motion.div
-              key={item.label}
-              className={`problem-card ${item.dark ? 'blind' : ''}`}
-              initial={{ opacity: 0, y: 30 }}
+              key={item}
+              className="problem-card"
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.45, delay: index * 0.08 }}
             >
-              <span className="problem-card-label">{item.label}</span>
-              <span className="problem-card-state">{item.state}</span>
+              {item}
             </motion.div>
           ))}
         </div>
@@ -45,8 +57,8 @@ const Problem = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          The conversations that actually create revenue are still mostly a black box.
-          So owners and managers make expensive decisions using incomplete or inaccurate sales data.
+          Most businesses lose that information forever. The call ends, the recording sits in a folder,
+          and what the buyer actually said never reaches the people making decisions.
         </motion.p>
       </div>
     </section>

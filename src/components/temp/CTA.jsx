@@ -27,8 +27,8 @@ const CTA = () => {
             }}
           />
 
-          <h2>Stop Guessing What's <span className="gradient-text">Happening In Sales</span></h2>
-          <p>Every recorded sales call becomes structured business evidence your team can actually use.</p>
+          <h2>Ready to <span className="gradient-text">stop guessing?</span></h2>
+          <p>Book a demo. See your first Integrity Audit.</p>
 
           <motion.button
             className="btn btn-primary"
@@ -50,7 +50,7 @@ const CTA = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.5 }}
           >
-            $1,000 / month. Unlimited call processing.
+            Unlimited call processing. Nothing for your team to fill out.
           </motion.p>
 
           <div className="cta-particles">

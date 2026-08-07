@@ -3,31 +3,30 @@ import { motion } from 'framer-motion'
 import { useDemoModal } from '../../hooks/useDemoModal'
 
 /*
- * Drop a real audit screenshot at public/integrity-audit.png and it replaces
- * the mock automatically. If the file is missing, the mock renders instead.
+ * Drop real audit screenshots at public/integrity-audit-1.png (large, top) and
+ * public/integrity-audit-2.png / -3.png (the two below) and they replace the
+ * mocks automatically. Missing files fall back to the mock renderings.
  */
-const SCREENSHOT_SRC = '/integrity-audit.png'
+const Shot = ({ src, alt, className, children }) => {
+  const [ok, setOk] = useState(true)
+  if (!ok) return children
+  return <img src={src} alt={alt} className={className} onError={() => setOk(false)} />
+}
 
-const bullets = [
-  'Script adherence',
-  'Rep comparison',
-  'Buyer psychology',
-  'Pain points',
-  'Goals',
-  'Objections',
-  'Winning patterns',
-  'Lost deal analysis',
-  'CRM health',
-  'Historical trends',
+const highlights = [
+  { label: "What's changing", detail: 'Movement in close rate, objections and buyer language, month over month.' },
+  { label: "What's working", detail: 'The patterns that show up in won deals — and who is running them.' },
+  { label: "What isn't", detail: 'Where deals are dying, and the reasons buyers actually gave.' },
+  { label: 'What deserves attention', detail: 'The specific calls and reps worth a manager\'s time this month.' },
 ]
 
 const AuditMock = () => {
   const bars = [72, 88, 61, 94, 55, 79, 68]
   const reps = [
-    { name: 'Rep A', score: '92', tone: 'good' },
-    { name: 'Rep B', score: '84', tone: 'good' },
-    { name: 'Rep C', score: '67', tone: 'warn' },
-    { name: 'Rep D', score: '51', tone: 'bad' },
+    { name: 'Rep A', score: 92, tone: 'good' },
+    { name: 'Rep B', score: 84, tone: 'good' },
+    { name: 'Rep C', score: 67, tone: 'warn' },
+    { name: 'Rep D', score: 51, tone: 'bad' },
   ]
 
   return (
@@ -38,31 +37,31 @@ const AuditMock = () => {
           <span style={{ background: '#febc2e' }}></span>
           <span style={{ background: '#28c840' }}></span>
         </div>
-        <span className="dashboard-title">Monthly Sales Integrity Audit</span>
+        <span className="dashboard-title">Sales Integrity Audit — March</span>
       </div>
 
       <div className="audit-mock-body">
         <div className="audit-mock-stats">
           <div className="audit-stat">
-            <span className="audit-stat-label">Script Adherence</span>
+            <span className="audit-stat-label">Process followed</span>
             <span className="audit-stat-value">78%</span>
-            <span className="audit-stat-change positive">+6 pts</span>
+            <span className="audit-stat-change positive">+6 pts vs February</span>
           </div>
           <div className="audit-stat">
-            <span className="audit-stat-label">CRM Accuracy</span>
+            <span className="audit-stat-label">CRM accuracy</span>
             <span className="audit-stat-value">94%</span>
-            <span className="audit-stat-change positive">+21 pts</span>
+            <span className="audit-stat-change positive">+21 pts vs February</span>
           </div>
           <div className="audit-stat">
-            <span className="audit-stat-label">Top Lost Reason</span>
+            <span className="audit-stat-label">Top reason for no</span>
             <span className="audit-stat-value sm">Price</span>
-            <span className="audit-stat-change">38% of losses</span>
+            <span className="audit-stat-change">38% of lost deals</span>
           </div>
         </div>
 
         <div className="audit-mock-panels">
           <div className="audit-panel">
-            <span className="audit-panel-title">Adherence Trend</span>
+            <span className="audit-panel-title">Process followed, by month</span>
             <div className="audit-chart">
               {bars.map((h, i) => (
                 <motion.span
@@ -78,7 +77,7 @@ const AuditMock = () => {
           </div>
 
           <div className="audit-panel">
-            <span className="audit-panel-title">Rep Comparison</span>
+            <span className="audit-panel-title">By rep</span>
             <div className="audit-reps">
               {reps.map((rep) => (
                 <div key={rep.name} className="audit-rep">
@@ -103,66 +102,153 @@ const AuditMock = () => {
   )
 }
 
+const ObjectionsMock = () => {
+  const rows = [
+    { name: 'Price', share: 38, trend: '+9' },
+    { name: 'Timing', share: 24, trend: '−3' },
+    { name: 'Spouse / partner', share: 18, trend: '+2' },
+    { name: 'Needs to think', share: 12, trend: '−6' },
+  ]
+  return (
+    <div className="audit-mock">
+      <div className="audit-mock-header">
+        <span className="dashboard-title">Why prospects said no</span>
+      </div>
+      <div className="audit-mock-body">
+        <div className="audit-reps">
+          {rows.map((row) => (
+            <div key={row.name} className="audit-rep wide">
+              <span className="audit-rep-name">{row.name}</span>
+              <span className="audit-rep-track">
+                <motion.span
+                  className="audit-rep-fill"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: `${row.share * 2}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7 }}
+                />
+              </span>
+              <span className="audit-rep-score">{row.share}%</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const QuotesMock = () => {
+  const quotes = [
+    '"We\'ve tried two agencies and neither one showed us numbers."',
+    '"I need to know it works before I put my team on it."',
+    '"Honestly, the last guy just sent us a login and disappeared."',
+  ]
+  return (
+    <div className="audit-mock">
+      <div className="audit-mock-header">
+        <span className="dashboard-title">In the buyer's words</span>
+      </div>
+      <div className="audit-mock-body">
+        <div className="quote-list">
+          {quotes.map((quote) => (
+            <p key={quote} className="quote-line">{quote}</p>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const IntegrityAudit = () => {
   const { openModal } = useDemoModal()
-  const [hasScreenshot, setHasScreenshot] = useState(true)
 
   return (
     <section id="integrity-audit" className="audit-section">
       <div className="container">
         <motion.div
-          className="section-header"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          <span className="badge">The Integrity Audit</span>
-          <h2>See What's Actually Happening <span className="gradient-text">Across Your Sales Team</span></h2>
-        </motion.div>
-
-        <motion.div
-          className="audit-visual"
+          className="audit-visual audit-visual-lg"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
-          {hasScreenshot ? (
-            <img
-              src={SCREENSHOT_SRC}
-              alt="Sample monthly Sales Integrity Audit"
-              className="audit-screenshot"
-              onError={() => setHasScreenshot(false)}
-            />
-          ) : (
+          <Shot src="/integrity-audit-1.png" alt="Monthly Sales Integrity Audit" className="audit-screenshot">
             <AuditMock />
-          )}
+          </Shot>
         </motion.div>
 
-        <motion.ul
-          className="audit-bullets"
-          initial={{ opacity: 0, y: 20 }}
+        <motion.div
+          className="section-header audit-header"
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+          transition={{ duration: 0.7 }}
         >
-          {bullets.map((bullet) => (
-            <li key={bullet}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 13l4 4L19 7" />
-              </svg>
-              {bullet}
-            </li>
+          <h2>The report your leadership team <span className="gradient-text">actually reads.</span></h2>
+          <p>
+            Every month CloserMetrix analyzes every sales conversation and highlights what's changing,
+            what's working, what isn't, and what deserves attention.
+          </p>
+        </motion.div>
+
+        <div className="audit-highlights">
+          {highlights.map((item, index) => (
+            <motion.div
+              key={item.label}
+              className="audit-highlight"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: index * 0.08 }}
+            >
+              <span className="audit-highlight-label">{item.label}</span>
+              <span className="audit-highlight-detail">{item.detail}</span>
+            </motion.div>
           ))}
-        </motion.ul>
+        </div>
+
+        <div className="audit-pair">
+          <motion.div
+            className="audit-visual"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Shot src="/integrity-audit-2.png" alt="Lost deal analysis" className="audit-screenshot">
+              <ObjectionsMock />
+            </Shot>
+          </motion.div>
+
+          <motion.div
+            className="audit-visual"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <Shot src="/integrity-audit-3.png" alt="Buyer language from recorded calls" className="audit-screenshot">
+              <QuotesMock />
+            </Shot>
+          </motion.div>
+        </div>
+
+        <motion.p
+          className="audit-evidence"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          Evidence. Not opinions.
+        </motion.p>
 
         <motion.div
           className="audit-cta"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
           <motion.button
             className="btn btn-primary"
@@ -170,7 +256,7 @@ const IntegrityAudit = () => {
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
           >
-            See Sample Audit
+            View an Integrity Audit
           </motion.button>
         </motion.div>
       </div>

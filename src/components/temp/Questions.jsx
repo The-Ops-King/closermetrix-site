@@ -2,11 +2,12 @@ import { motion } from 'framer-motion'
 
 const questions = [
   'Why did close rate change?',
-  'Which objections are costing us deals?',
-  'Which avatars convert best?',
+  'Why are prospects saying no?',
+  'Which objections are increasing?',
   'Which reps follow the process?',
-  'Which calls should managers review?',
-  'Can we trust our CRM?',
+  'What language actually resonates?',
+  'Can I trust my CRM?',
+  'Which calls deserve review?',
   'What changed this month?',
 ]
 
@@ -21,8 +22,7 @@ const Questions = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <span className="badge cyan">Questions We Help Answer</span>
-          <h2>The Questions Nobody Can <span className="gradient-text">Answer With Confidence</span></h2>
+          <h2>Questions CloserMetrix <span className="gradient-text">Answers</span></h2>
         </motion.div>
 
         <div className="questions-grid">

@@ -24,8 +24,8 @@ const Navbar = () => {
   const navItems = isTemp
     ? [
         { label: 'How It Works', href: '#how-it-works' },
+        { label: 'What You Get', href: '#deliverables' },
         { label: 'Integrity Audit', href: '#integrity-audit' },
-        { label: 'Pricing', href: '#pricing' },
       ]
     : [
         { label: 'Features', href: '#features' },

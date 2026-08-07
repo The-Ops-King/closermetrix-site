@@ -14,9 +14,9 @@ const SITE = 'https://closermetrix.com';
 // Per-route head overrides. Routes not listed keep the defaults from index.html.
 const meta = {
   '/temp': {
-    title: 'CloserMetrix — Turn Every Sales Call Into Business Evidence',
+    title: 'CloserMetrix — Turn Every Sales Call Into Better Business Decisions',
     description:
-      'The sales call is the biggest blind spot in your business. CloserMetrix automatically turns every recorded sales call into CRM updates, manager reports, weekly sales intelligence and a monthly Sales Integrity Audit.',
+      'The Sales Intelligence Layer for high-ticket sales teams. Every recorded sales call becomes accurate CRM updates, manager visibility, marketing insights and a monthly Sales Integrity Audit.',
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'SoftwareApplication',
