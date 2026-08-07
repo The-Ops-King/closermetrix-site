@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import CallEvidence from './CallEvidence'
+import AuditPreview from './AuditPreview'
 import StarBorder from '../StarBorder'
 import { useDemoModal } from '../../hooks/useDemoModal'
 
@@ -51,8 +51,8 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          Automatically turn every recorded sales call into business intelligence that keeps your
-          CRM accurate, gives managers complete visibility, and helps leadership make better decisions.
+          Automatically turn every sales conversation into the information your owners, managers,
+          and marketers need to make better business decisions.
         </motion.p>
 
         <motion.div
@@ -94,7 +94,7 @@ const Hero = () => {
         animate={{ opacity: 1, scale: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.3 }}
       >
-        <CallEvidence />
+        <AuditPreview />
       </motion.div>
     </section>
   )

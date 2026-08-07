@@ -51,15 +51,19 @@ const Philosophy = () => {
           </motion.div>
         </div>
 
-        <motion.p
+        <motion.div
           className="philosophy-closer"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Better evidence leads to better decisions.
-        </motion.p>
+          <p>Better evidence leads to better decisions.</p>
+          <p className="philosophy-judgment">
+            We don't replace your judgment.
+            <span className="headline-break gradient-text">We make your judgment better.</span>
+          </p>
+        </motion.div>
       </div>
     </section>
   )

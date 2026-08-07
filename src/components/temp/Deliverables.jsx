@@ -1,25 +1,21 @@
 import { motion } from 'framer-motion'
+import CallEvidence from './CallEvidence'
 
-const cadences = [
+const destinations = [
   {
-    when: 'Every Call',
-    items: [
-      'CRM Notes',
-      'Pain Points',
-      'Goals',
-      'Objections',
-      'Next Steps',
-      'Rubric Score',
-      'Manager Summary',
-    ],
+    who: 'CRM',
+    detail: 'The record writes itself.',
+    items: ['Notes', 'Pipeline', 'Next Steps', 'Pain Points'],
   },
   {
-    when: 'Every Week',
-    items: ['Sales Intelligence Report'],
+    who: 'Managers',
+    detail: 'What happened, without listening to every call.',
+    items: ['Slack Summary', 'Rubric', 'Calls to Review'],
   },
   {
-    when: 'Every Month',
-    items: ['Sales Integrity Audit', 'Historical Trends', 'Business Intelligence'],
+    who: 'Business',
+    detail: 'What the calls say, month over month.',
+    items: ['Weekly Report', 'Integrity Audit', 'Historical Data'],
     featured: true,
   },
 ]
@@ -41,22 +37,43 @@ const Deliverables = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2>What you actually <span className="gradient-text">get back</span></h2>
+          <h2>What happens after <span className="gradient-text">every sales call</span></h2>
         </motion.div>
 
-        <div className="cadence-grid">
-          {cadences.map((cadence, index) => (
+        <motion.div
+          className="call-evidence-wrap"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <CallEvidence />
+        </motion.div>
+
+        <motion.p
+          className="destinations-lede"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          That one record then goes three places.
+        </motion.p>
+
+        <div className="destinations-grid">
+          {destinations.map((destination, index) => (
             <motion.div
-              key={cadence.when}
-              className={`cadence-card ${cadence.featured ? 'featured' : ''}`}
+              key={destination.who}
+              className={`destination-card ${destination.featured ? 'featured' : ''}`}
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <span className="cadence-when">{cadence.when}</span>
-              <ul className="cadence-list">
-                {cadence.items.map((item) => (
+              <span className="destination-who">{destination.who}</span>
+              <span className="destination-detail">{destination.detail}</span>
+              <ul className="destination-list">
+                {destination.items.map((item) => (
                   <li key={item}>
                     <span className="deliverable-check"><Check /></span>
                     {item}

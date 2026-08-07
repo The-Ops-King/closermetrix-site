@@ -20,6 +20,10 @@ const BlindSpot = () => {
           transition={{ duration: 0.8 }}
         >
           <h2>Every important business decision <span className="gradient-text">starts in a sales call.</span></h2>
+          <p>
+            Every important business decision starts with a sales conversation — yet most leadership
+            teams never know what actually happened.
+          </p>
         </motion.div>
 
         <div className="blindspot-split">

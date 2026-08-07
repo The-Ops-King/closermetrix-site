@@ -18,10 +18,10 @@ const highlights = ["What's changing", "What's working", "What's breaking", 'Wha
 const AuditMock = () => {
   const bars = [72, 88, 61, 94, 55, 79, 68]
   const reps = [
-    { name: 'Rep A', score: 92, tone: 'good' },
-    { name: 'Rep B', score: 84, tone: 'good' },
-    { name: 'Rep C', score: 67, tone: 'warn' },
-    { name: 'Rep D', score: 51, tone: 'bad' },
+    { name: 'Sarah', score: 96, tone: 'good' },
+    { name: 'Priya', score: 84, tone: 'good' },
+    { name: 'Bob', score: 71, tone: 'warn' },
+    { name: 'Marcus', score: 54, tone: 'bad' },
   ]
 
   return (
@@ -50,7 +50,7 @@ const AuditMock = () => {
           <div className="audit-stat">
             <span className="audit-stat-label">Top reason for no</span>
             <span className="audit-stat-value sm">Price</span>
-            <span className="audit-stat-change">38% of lost deals</span>
+            <span className="audit-stat-change">14% of lost deals</span>
           </div>
         </div>
 
@@ -99,10 +99,10 @@ const AuditMock = () => {
 
 const ObjectionsMock = () => {
   const rows = [
-    { name: 'Price', share: 38, trend: '+9' },
-    { name: 'Timing', share: 24, trend: '−3' },
-    { name: 'Spouse / partner', share: 18, trend: '+2' },
-    { name: 'Needs to think', share: 12, trend: '−6' },
+    { name: 'Timing', share: 31 },
+    { name: 'Spouse / partner', share: 22 },
+    { name: 'Needs to think', share: 17 },
+    { name: 'Price', share: 14 },
   ]
   return (
     <div className="audit-mock">
