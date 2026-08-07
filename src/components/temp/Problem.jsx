@@ -50,16 +50,23 @@ const Problem = () => {
           ))}
         </ul>
 
-        <motion.p
-          className="problem-closer"
+        <motion.div
+          className="problem-ending"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
-          Most businesses lose that information forever. The call ends, the recording sits in a folder,
-          and what the buyer actually said never reaches the people making decisions.
-        </motion.p>
+          <p className="problem-ending-lead">When the call ends&hellip;</p>
+          <ul className="problem-ending-list">
+            <li>The customer leaves.</li>
+            <li>The recording gets archived.</li>
+            <li>The CRM gets incomplete notes.</li>
+          </ul>
+          <p className="problem-ending-punch">
+            Leadership loses the most valuable information in the business.
+          </p>
+        </motion.div>
       </div>
     </section>
   )

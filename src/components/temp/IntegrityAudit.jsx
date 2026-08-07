@@ -13,12 +13,7 @@ const Shot = ({ src, alt, className, children }) => {
   return <img src={src} alt={alt} className={className} onError={() => setOk(false)} />
 }
 
-const highlights = [
-  { label: "What's changing", detail: 'Movement in close rate, objections and buyer language, month over month.' },
-  { label: "What's working", detail: 'The patterns that show up in won deals — and who is running them.' },
-  { label: "What isn't", detail: 'Where deals are dying, and the reasons buyers actually gave.' },
-  { label: 'What deserves attention', detail: 'The specific calls and reps worth a manager\'s time this month.' },
-]
+const highlights = ["What's changing", "What's working", "What's breaking", 'What deserves attention']
 
 const AuditMock = () => {
   const bars = [72, 88, 61, 94, 55, 79, 68]
@@ -185,27 +180,33 @@ const IntegrityAudit = () => {
           transition={{ duration: 0.7 }}
         >
           <h2>The report your leadership team <span className="gradient-text">actually reads.</span></h2>
-          <p>
-            Every month CloserMetrix analyzes every sales conversation and highlights what's changing,
-            what's working, what isn't, and what deserves attention.
-          </p>
+          <p>Every month your leadership team receives a Sales Integrity Audit showing:</p>
         </motion.div>
 
         <ul className="audit-highlights">
           {highlights.map((item, index) => (
             <motion.li
-              key={item.label}
+              key={item}
               className="audit-highlight"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.45, delay: index * 0.08 }}
             >
-              <span className="audit-highlight-label">{item.label}</span>
-              <span className="audit-highlight-detail">{item.detail}</span>
+              {item}
             </motion.li>
           ))}
         </ul>
+
+        <motion.p
+          className="audit-support"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          Supported entirely by evidence from real sales conversations.
+        </motion.p>
 
         <div className="audit-pair">
           <motion.div

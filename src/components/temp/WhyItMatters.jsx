@@ -9,7 +9,7 @@ const roles = [
       </svg>
     ),
     title: 'Owners',
-    description: 'Stop making decisions based on vibes.',
+    description: 'Stop making expensive decisions using incomplete information.',
   },
   {
     icon: (

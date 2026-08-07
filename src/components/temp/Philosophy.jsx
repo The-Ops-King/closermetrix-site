@@ -17,6 +17,16 @@ const Philosophy = () => {
           </h2>
         </motion.div>
 
+        <motion.p
+          className="philosophy-lede"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          CloserMetrix never tells you what to change. It tells you what the calls show.
+        </motion.p>
+
         <div className="philosophy-compare">
           <motion.div
             className="philosophy-card muted"
@@ -40,6 +50,16 @@ const Philosophy = () => {
             <p>"Discovery questions appeared in 91% of won deals."</p>
           </motion.div>
         </div>
+
+        <motion.p
+          className="philosophy-closer"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          Better evidence leads to better decisions.
+        </motion.p>
       </div>
     </section>
   )

@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion'
 
 const effects = [
-  { title: 'The dataset compounds', detail: 'Every month of calls makes the patterns clearer than the month before.' },
-  { title: 'Marketing improves', detail: 'Messaging gets written from what buyers said, not what someone guessed.' },
-  { title: 'Managers trust the CRM', detail: 'The record matches the conversation, because it came from the conversation.' },
-  { title: 'Leadership stops guessing', detail: 'Decisions get made against evidence that was already sitting in your calls.' },
+  { title: 'Your historical dataset grows', detail: 'Every month adds to the record, so the patterns get clearer than the month before.' },
+  { title: 'Marketing learns more', detail: 'Messaging gets written from what buyers said, not what someone guessed.' },
+  { title: 'Managers gain confidence', detail: 'The record matches the conversation, because it came from the conversation.' },
+  { title: 'Leadership spots trends earlier', detail: 'Shifts show up in the data before they show up in the revenue.' },
 ]
 
 const WhyCompaniesStay = () => {
@@ -39,6 +39,16 @@ const WhyCompaniesStay = () => {
             </motion.li>
           ))}
         </ul>
+
+        <motion.p
+          className="stay-closer"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          The value compounds over time.
+        </motion.p>
       </div>
     </section>
   )

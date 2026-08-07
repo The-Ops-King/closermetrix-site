@@ -3,13 +3,6 @@ import CallEvidence from './CallEvidence'
 import StarBorder from '../StarBorder'
 import { useDemoModal } from '../../hooks/useDemoModal'
 
-const outputs = [
-  'Accurate CRM updates',
-  'Manager visibility',
-  'Marketing insights',
-  'Business intelligence',
-]
-
 const Hero = () => {
   const { openModal } = useDemoModal()
 
@@ -53,37 +46,13 @@ const Hero = () => {
         </h1>
 
         <motion.p
-          className="hero-lede"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.35 }}
-        >
-          Automatically turn every recorded sales call into:
-        </motion.p>
-
-        <motion.ul
-          className="hero-outputs"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.45 }}
-        >
-          {outputs.map((output) => (
-            <li key={output}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 13l4 4L19 7" />
-              </svg>
-              {output}
-            </li>
-          ))}
-        </motion.ul>
-
-        <motion.p
           className="hero-subtitle"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.55 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
         >
-          So your team spends less time on admin and leadership makes better decisions.
+          Automatically turn every recorded sales call into business intelligence that keeps your
+          CRM accurate, gives managers complete visibility, and helps leadership make better decisions.
         </motion.p>
 
         <motion.div

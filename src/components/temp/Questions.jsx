@@ -5,10 +5,22 @@ const questions = [
   'Why are prospects saying no?',
   'Which objections are increasing?',
   'Which reps follow the process?',
-  'What language actually resonates?',
-  'Can I trust my CRM?',
-  'Which calls deserve review?',
+  'What language closes deals?',
+  'Which promises are reps making?',
+  'Which avatars convert best?',
   'What changed this month?',
+  'Which calls deserve review?',
+  'Can I trust my CRM?',
+  'What pain points appear most often?',
+  'Which closer skips discovery?',
+  'What promises correlate with won deals?',
+  'What changed after our new offer launched?',
+  'Why are deals stalling?',
+  'What trends should leadership know?',
+  'Which goals do buyers bring up unprompted?',
+  'Where in the call do deals go sideways?',
+  'What are buyers comparing us to?',
+  'Which follow-ups actually got made?',
 ]
 
 const Questions = () => {
@@ -30,10 +42,10 @@ const Questions = () => {
             <motion.li
               key={question}
               className="question-card"
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.45, delay: (index % 4) * 0.08 }}
+              transition={{ duration: 0.4, delay: (index % 4) * 0.06 }}
             >
               <span className="question-mark">?</span>
               <span className="question-text">{question}</span>
