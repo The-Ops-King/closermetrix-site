@@ -51,8 +51,8 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          Automatically turn every sales conversation into the information your owners, managers,
-          and marketers need to make better business decisions.
+          Every recorded sales call becomes business intelligence your leadership team can act on —
+          complete visibility into what buyers said, what closers promised, and what changed this month.
         </motion.p>
 
         <motion.div
@@ -83,7 +83,7 @@ const Hero = () => {
             whileHover={{ scale: 1.02, borderColor: 'rgba(255,255,255,0.4)' }}
             whileTap={{ scale: 0.98 }}
           >
-            View an Integrity Audit
+            View Sample Integrity Audit
           </motion.a>
         </motion.div>
       </div>

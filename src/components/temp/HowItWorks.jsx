@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 const steps = [
   { title: 'Record the call', detail: 'Your team keeps working the way it already works.' },
   { title: 'CloserMetrix extracts structured data', detail: 'What was said, what was raised, what was agreed.' },
-  { title: 'CRM updates automatically', detail: 'Notes, fields and next steps written without anyone typing.' },
+  { title: 'Your CRM stays accurate', detail: 'Notes, fields and next steps land there without anyone typing.' },
   { title: 'Managers get reports', detail: 'What happened on every call, without listening to every call.' },
   { title: 'Marketing gets customer intelligence', detail: 'The language buyers actually use, in their words.' },
   { title: 'Leadership gets monthly Integrity Audits', detail: 'What changed, what worked, what deserves attention.' },

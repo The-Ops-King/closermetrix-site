@@ -1,6 +1,6 @@
 # CloserMetrix
 
-> The Sales Intelligence Layer for High-Ticket Sales Teams. CloserMetrix turns every recorded sales call into accurate CRM updates, manager visibility, marketing insights and business intelligence — so teams spend less time on admin and leadership makes better decisions.
+> The Sales Intelligence Layer for High-Ticket Sales Teams. Every recorded sales call becomes business intelligence your leadership team can act on — complete visibility into what buyers said, what closers promised, and what changed this month.
 
 Every sales call should leave your business smarter than it was before.
 
@@ -22,18 +22,16 @@ Better conversations create better decisions.
 
 1. Record the call.
 2. CloserMetrix extracts structured data.
-3. CRM updates automatically.
+3. Your CRM stays accurate.
 4. Managers get reports.
 5. Marketing gets customer intelligence.
 6. Leadership gets monthly Integrity Audits.
 
-## Deliverables
+## What happens after every call
 
-Every call automatically becomes: CRM notes, pain points, goals, objections, next steps, follow-up plan, rubric score, manager summary.
-
-Every week: a Sales Intelligence Report.
-
-Every month: a Sales Integrity Audit.
+- **CRM — a record you can trust:** notes, pain points, goals, objections, next steps.
+- **Managers — visibility without the listening:** call summary, rubric score, calls worth reviewing.
+- **Business — evidence that compounds:** weekly Sales Intelligence Report, monthly Sales Integrity Audit, historical trends.
 
 ## The Integrity Audit
 
@@ -54,13 +52,17 @@ The report leadership actually reads. Every month CloserMetrix analyzes every sa
 
 The longer you use CloserMetrix, the smarter your business becomes. The dataset compounds, marketing improves, managers trust the CRM, and leadership stops guessing.
 
+## Pricing
+
+Pricing scales with your team and call volume.
+
 ## Integrations
 
 CRM: GHL, HubSpot, Close. Recordings: Zoom, Fathom. Notifications: Slack, Email.
 
 ## Philosophy
 
-We don't make decisions. We surface evidence. Instead of "you should rewrite your script", CloserMetrix says "discovery questions appeared in 91% of won deals."
+We don't make decisions. We surface evidence. Instead of "you should rewrite your script", CloserMetrix says "discovery questions appeared in 91% of won deals." We don't replace your judgment. We make your judgment better.
 
 ## Pages
 

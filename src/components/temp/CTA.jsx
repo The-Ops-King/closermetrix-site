@@ -30,18 +30,29 @@ const CTA = () => {
           <h2>Ready to <span className="gradient-text">stop guessing?</span></h2>
           <p>Book a demo. See your first Integrity Audit.</p>
 
-          <motion.button
-            className="btn btn-primary"
-            onClick={openModal}
-            whileHover={{ scale: 1.05, boxShadow: '0 20px 60px rgba(0, 255, 136, 0.4)' }}
-            whileTap={{ scale: 0.95 }}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginTop: '24px' }}
-          >
-            Book a Demo
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </motion.button>
+          <div className="cta-actions">
+            <motion.button
+              className="btn btn-primary"
+              onClick={openModal}
+              whileHover={{ scale: 1.05, boxShadow: '0 20px 60px rgba(0, 255, 136, 0.4)' }}
+              whileTap={{ scale: 0.95 }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+            >
+              Book a Demo
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </motion.button>
+
+            <motion.button
+              className="btn btn-secondary"
+              onClick={openModal}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              See a Sample Integrity Audit
+            </motion.button>
+          </div>
 
           <motion.p
             className="cta-note"
@@ -50,7 +61,7 @@ const CTA = () => {
             viewport={{ once: true }}
             transition={{ delay: 0.5 }}
           >
-            Unlimited call processing. Nothing for your team to fill out.
+            Pricing scales with your team and call volume.
           </motion.p>
 
           <div className="cta-particles">

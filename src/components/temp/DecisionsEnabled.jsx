@@ -1,30 +1,29 @@
 import { motion } from 'framer-motion'
 
-/* Observations, not recommendations — that distinction is the point of the section. */
-const shifts = [
+/*
+ * Paired what-you-assumed / what-the-calls-showed. Observations, never
+ * recommendations — that distinction is the point of the section.
+ */
+const examples = [
   {
-    before: 'We think price is the issue.',
-    after: 'Price appeared in only 14% of lost deals.',
+    before: 'We thought price was the issue.',
+    after: 'Implementation concerns appeared three times more often than pricing.',
   },
   {
-    before: 'We think Bob is our best closer.',
-    after: 'Sarah follows the sales process 96% of the time.',
+    before: 'We assumed the team runs the same process.',
+    after: 'One closer ran discovery on 94% of calls. Another ran it on 31%.',
   },
   {
-    before: "We think marketing is attracting the wrong people.",
-    after: 'Most won deals mention implementation speed.',
+    before: 'We thought the new offer landed well.',
+    after: 'One objection increased 42% in the three weeks after launch.',
   },
   {
-    before: 'We think the new offer is landing.',
-    after: 'One objection increased 42% after the last webinar.',
+    before: 'We trusted the pipeline stages in the CRM.',
+    after: 'A third of calls marked "follow-up booked" had no next step agreed on the call.',
   },
   {
-    before: 'We think the CRM is current.',
-    after: '1 in 3 closed calls had no next step recorded.',
-  },
-  {
-    before: 'We think buyers want a discount.',
-    after: 'Payment plan requests doubled this month.',
+    before: 'We built the ads around our best-known benefit.',
+    after: 'Most won deals mentioned a pain point the ads never named.',
   },
 ]
 
@@ -43,31 +42,23 @@ const DecisionsEnabled = () => {
           <p>CloserMetrix doesn't tell you what to do. It helps you understand what's happening.</p>
         </motion.div>
 
-        <ul className="shifts">
-          {shifts.map((shift, index) => (
+        <ul className="decisions-list">
+          {examples.map((example, index) => (
             <motion.li
-              key={shift.before}
-              className="shift"
+              key={example.before}
+              className="decision-pair"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.45, delay: (index % 3) * 0.08 }}
             >
-              <span className="shift-side before">
-                <span className="shift-tag">Before</span>
-                <span className="shift-text">"{shift.before}"</span>
-              </span>
-
-              <span className="shift-arrow" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <span className="decision-before">{example.before}</span>
+              <span className="decision-arrow" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </span>
-
-              <span className="shift-side after">
-                <span className="shift-tag">After</span>
-                <span className="shift-text">{shift.after}</span>
-              </span>
+              <span className="decision-after">{example.after}</span>
             </motion.li>
           ))}
         </ul>

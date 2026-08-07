@@ -134,7 +134,57 @@
   color: var(--text-primary);
 }
 
-/* ─── Hero visual: one call becomes a record ─── */
+/* ─── Hero visual: Integrity Audit preview ─── */
+.audit-preview,
+.audit-preview-shot {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 212, 255, 0.22);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(0, 212, 255, 0.08);
+  background: rgba(2, 6, 23, 0.75);
+}
+
+.audit-preview-shot {
+  display: block;
+  height: auto;
+}
+
+.audit-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.audit-preview-body {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.audit-preview-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.audit-preview-finding {
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: rgba(0, 255, 136, 0.06);
+  border-left: 2px solid rgba(0, 255, 136, 0.5);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+/* ─── Legacy hero visual (kept for reference) ─── */
 .evidence-card {
   position: relative;
   width: 100%;
@@ -388,65 +438,20 @@
   z-index: 1;
 }
 
-.call-evidence-wrap {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 40px;
-}
-
-.destinations-lede {
-  text-align: center;
-  font-size: 1.1rem;
-  color: var(--text-secondary);
-  margin-bottom: 32px;
-}
-
-.destinations-grid {
+.cadence-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1.4fr 1fr 1.2fr;
   gap: 24px;
   align-items: start;
 }
 
-.destination-card {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 32px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  transition: border-color 0.3s ease;
-}
-
-.destination-card:hover {
-  border-color: rgba(0, 255, 136, 0.25);
-}
-
-.destination-card.featured {
-  border-color: rgba(0, 255, 136, 0.3);
-  background: linear-gradient(135deg, rgba(0,255,136,0.08) 0%, rgba(255,255,255,0.02) 100%);
-}
-
-.destination-who {
-  font-size: 1.35rem;
-  font-weight: 700;
-}
-
-.destination-detail {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  margin-bottom: 12px;
-}
-
-.destination-list {
+.cadence-list {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.destination-list li {
+.cadence-list li {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -466,41 +471,36 @@
   flex-shrink: 0;
 }
 
-/* Compact audit used as the hero visual. */
-.audit-preview {
-  position: relative;
-  width: 100%;
-  max-width: 560px;
-  border-radius: 22px;
-  overflow: hidden;
-  border: 1px solid rgba(0, 212, 255, 0.22);
-  background: rgba(2, 6, 23, 0.72);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(0, 212, 255, 0.08);
+.cadence-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 32px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
 }
 
-.audit-preview .audit-mock-body {
-  padding: 20px;
-  gap: 16px;
+.cadence-card.featured {
+  border-color: rgba(0, 255, 136, 0.3);
+  background: linear-gradient(135deg, rgba(0,255,136,0.08) 0%, rgba(255,255,255,0.02) 100%);
 }
 
-.audit-preview .audit-stat {
-  padding: 14px;
+.cadence-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.audit-preview .audit-stat-value {
-  font-size: 1.5rem;
+.cadence-when {
+  font-size: 1.35rem;
+  font-weight: 700;
 }
 
-.audit-preview .audit-stat-value.sm {
-  font-size: 1.15rem;
-}
-
-.audit-preview .audit-chart {
-  height: 84px;
-}
-
-.audit-mock-panels.single {
-  grid-template-columns: 1fr 1fr;
+.cadence-outcome {
+  font-size: 0.95rem;
+  color: var(--aurora-green);
 }
 
 /* ─── Integrity Audit ─── */
@@ -518,17 +518,49 @@
   background: rgba(2, 6, 23, 0.6);
 }
 
-/* The audit is the centerpiece — let its visual break out past the container. */
+/* The audit is the centerpiece — let its visual break past the container.
+   Gated on viewport width so the breakout can never cause horizontal scroll:
+   100vw includes the scrollbar, so sizing off it overflows. */
 .audit-visual-lg {
-  margin-bottom: 64px;
-  width: calc(100% + 160px);
-  margin-left: -80px;
+  margin-bottom: 72px;
 }
 
-@media (max-width: 1400px) {
+/* Negative margin, not translateX — a transform is visual only and leaves the
+   layout box (and the page's scroll width) sticking out to the right. */
+@media (min-width: 1320px) {
   .audit-visual-lg {
-    width: 100%;
-    margin-left: 0;
+    width: 1260px;
+    margin-left: calc((100% - 1260px) / 2);
+  }
+}
+
+@media (min-width: 1520px) {
+  .audit-visual-lg {
+    width: 1440px;
+    margin-left: calc((100% - 1440px) / 2);
+  }
+}
+
+.audit-visual-lg .audit-mock-body {
+  padding: 40px;
+  gap: 32px;
+}
+
+.audit-visual-lg .audit-stat-value {
+  font-size: 2.6rem;
+}
+
+.audit-visual-lg .audit-chart {
+  height: 190px;
+}
+
+@media (max-width: 768px) {
+  .audit-visual-lg .audit-mock-body {
+    padding: 20px;
+  }
+
+  .audit-visual-lg .audit-stat-value {
+    font-size: 2rem;
   }
 }
 
@@ -750,7 +782,7 @@
   z-index: 1;
 }
 
-.shifts {
+.decisions-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -758,66 +790,38 @@
   margin: 0 auto;
 }
 
-.shift {
+.decision-pair {
   display: grid;
-  grid-template-columns: 1fr 44px 1fr;
-  align-items: stretch;
-  gap: 8px;
-}
-
-.shift-side {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 22px 26px;
+  grid-template-columns: 1fr 40px 1.25fr;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 28px;
   border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color 0.3s ease;
 }
 
-.shift-side.before {
-  background: rgba(255, 255, 255, 0.02);
+.decision-pair:hover {
+  border-color: rgba(0, 255, 136, 0.25);
 }
 
-.shift-side.after {
-  background: linear-gradient(135deg, rgba(0,255,136,0.08) 0%, rgba(255,255,255,0.02) 100%);
-  border-color: rgba(0, 255, 136, 0.28);
-}
-
-.shift-tag {
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
+.decision-before {
+  font-size: 1.05rem;
+  line-height: 1.5;
   color: var(--text-muted);
 }
 
-.shift-side.after .shift-tag {
-  color: var(--aurora-green);
-}
-
-.shift-text {
-  font-size: 1.08rem;
-  line-height: 1.5;
-  color: var(--text-secondary);
-}
-
-.shift-side.after .shift-text {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.shift-arrow {
+.decision-arrow {
   display: flex;
-  align-items: center;
   justify-content: center;
   color: var(--aurora-cyan);
-  opacity: 0.6;
 }
 
-.philosophy-judgment {
-  margin-top: 28px;
-  font-size: clamp(1.5rem, 3vw, 2.2rem);
-  font-weight: 700;
-  line-height: 1.35;
+.decision-after {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  font-weight: 600;
 }
 
 .decisions-note {
@@ -833,6 +837,25 @@
   text-align: center;
   font-size: 1.35rem;
   font-weight: 600;
+}
+
+.philosophy-punch {
+  display: block;
+  margin-top: 8px;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+  background: var(--gradient-aurora);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 28px;
 }
 
 .philosophy-lede {
@@ -936,10 +959,12 @@
 }
 
 /* ─── Integrations ─── */
+/* Supporting information, not a selling point — keep it quiet. */
 .integrations-section {
-  padding: 40px 0 60px;
+  padding: 24px 0 48px;
   position: relative;
   z-index: 1;
+  opacity: 0.75;
 }
 
 .integrations-heading {
@@ -956,11 +981,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 48px;
-  padding: 32px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  background: rgba(255, 255, 255, 0.02);
+  gap: 40px;
+  padding: 0;
 }
 
 .integration-group {
@@ -1067,20 +1089,20 @@
   }
 
   .blindspot-split,
-  .destinations-grid,
+  .cadence-grid,
   .audit-pair,
   .philosophy-compare {
     grid-template-columns: 1fr;
   }
 
-  .shift {
+  .decision-pair {
     grid-template-columns: 1fr;
-    gap: 6px;
+    gap: 10px;
   }
 
-  .shift-arrow {
+  .decision-arrow {
+    justify-content: flex-start;
     transform: rotate(90deg);
-    padding: 4px 0;
   }
 
   .chain-step:not(:last-child)::after {
