@@ -19,9 +19,10 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const isTemp = location.pathname.startsWith('/temp')
+  // The sales-intelligence page is the homepage; /v1 keeps the previous one.
+  const isLegacy = location.pathname.startsWith('/v1')
 
-  const navItems = isTemp
+  const navItems = !isLegacy
     ? [
         { label: 'How It Works', href: '#how-it-works' },
         { label: 'What You Get', href: '#deliverables' },

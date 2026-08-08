@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Aurora from './components/Aurora'
 import ShapeBlur from './components/ShapeBlur'
@@ -18,10 +18,11 @@ import DemoModal from './components/DemoModal'
 import OnboardingSelect from './components/OnboardingSelect'
 import OnboardingTldv from './components/OnboardingTldv'
 import OnboardingFathom from './components/OnboardingFathom'
-import TempPage from './TempPage'
+import HomePage from './HomePage'
 import { DemoModalProvider } from './hooks/useDemoModal'
 
-function HomePage({ logoItems }) {
+/* The previous homepage, served at /v1 so it stays available for rollback. */
+function LegacyHomePage({ logoItems }) {
   return (
     <>
       <Hero />
@@ -388,10 +389,14 @@ function App() {
               <Navbar />
               <main>
                 <Routes>
-                  <Route path="/" element={<HomePage logoItems={logoItems} />} />
+                  <Route path="/" element={<HomePage />} />
+                  {/* Previous homepage, kept reachable for rollback. Not linked
+                      anywhere, noindex, and absent from the sitemap. */}
+                  <Route path="/v1" element={<LegacyHomePage logoItems={logoItems} />} />
                   <Route path="/how-it-works" element={<HowItWorksPage />} />
                   <Route path="/faq" element={<FAQPage />} />
-                  <Route path="/temp" element={<TempPage />} />
+                  {/* The page lived here while it was in review. */}
+                  <Route path="/temp" element={<Navigate to="/" replace />} />
                   <Route path="/onboarding" element={<OnboardingSelect />} />
                   <Route path="/onboarding/tldv" element={<OnboardingTldv />} />
                   <Route path="/onboarding/fathom" element={<OnboardingFathom />} />

@@ -7,42 +7,20 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = resolve(__dirname, '..', 'dist');
 
-const routes = ['/', '/how-it-works', '/faq', '/temp', '/onboarding', '/onboarding/tldv', '/onboarding/fathom'];
+const routes = ['/', '/v1', '/how-it-works', '/faq', '/onboarding', '/onboarding/tldv', '/onboarding/fathom'];
 
 const SITE = 'https://closermetrix.com';
 
-// Per-route head overrides. Routes not listed keep the defaults from index.html.
+/*
+ * Per-route head overrides. Routes not listed keep the defaults from
+ * index.html, which now carry the homepage's title, description and JSON-LD.
+ */
 const meta = {
-  '/temp': {
-    title: 'CloserMetrix — Turn Every Sales Call Into Better Business Decisions',
+  '/v1': {
+    title: 'CloserMetrix',
     description:
-      'The Sales Intelligence Layer for high-ticket sales teams. Every recorded sales call becomes accurate CRM updates, manager visibility, marketing insights and a monthly Sales Integrity Audit.',
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'SoftwareApplication',
-      name: 'CloserMetrix',
-      applicationCategory: 'BusinessApplication',
-      url: `${SITE}/temp`,
-      offers: {
-        '@type': 'Offer',
-        price: '1000',
-        priceCurrency: 'USD',
-        description:
-          'Unlimited call processing, CRM updates, weekly reports, monthly Integrity Audit.',
-      },
-      featureList: [
-        'CRM Updates',
-        'Call Notes',
-        'Pain Points',
-        'Goals',
-        'Objections',
-        'Next Steps',
-        'Pipeline Updates',
-        'Manager Notifications',
-        'Weekly Reports',
-        'Monthly Integrity Audit',
-      ],
-    },
+      'Previous CloserMetrix homepage, kept for reference. See closermetrix.com for the current site.',
+    noindex: true,
   },
 };
 
@@ -123,18 +101,20 @@ async function applyMeta(page, route) {
     }
     canonical.href = site + path;
 
-    // Plain-text summary for agents that prefer it over parsing the page.
-    const alt = document.createElement('link');
-    alt.rel = 'alternate';
-    alt.type = 'text/markdown';
-    alt.href = '/llms.txt';
-    alt.title = 'Plain-text summary';
-    document.head.appendChild(alt);
+    if (cfg.noindex) {
+      setMeta('meta[name="robots"]', 'content', 'noindex, follow');
+      // Structured data and the plain-text alternate describe the live site,
+      // not an archived copy of it.
+      document.head.querySelectorAll('script[type="application/ld+json"]').forEach((el) => el.remove());
+      document.head.querySelectorAll('link[rel="alternate"]').forEach((el) => el.remove());
+    }
 
-    const ld = document.createElement('script');
-    ld.type = 'application/ld+json';
-    ld.textContent = JSON.stringify({ ...cfg.jsonLd, description: cfg.description });
-    document.head.appendChild(ld);
+    if (cfg.jsonLd) {
+      const ld = document.createElement('script');
+      ld.type = 'application/ld+json';
+      ld.textContent = JSON.stringify({ ...cfg.jsonLd, description: cfg.description });
+      document.head.appendChild(ld);
+    }
   }, config, SITE, route);
 }
 

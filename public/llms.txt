@@ -66,6 +66,5 @@ We don't make decisions. We surface evidence. Instead of "you should rewrite you
 
 ## Pages
 
-- [Sales intelligence overview](https://closermetrix.com/temp)
-- [Homepage](https://closermetrix.com/)
+- [Homepage](https://closermetrix.com/) — the full overview.
 - [FAQ](https://closermetrix.com/faq)

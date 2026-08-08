@@ -1,5 +1,5 @@
 /* ==========================================================================
-   /temp — sales intelligence positioning page
+   Homepage — sales intelligence positioning
    Section styles only; colors, buttons and cards come from index.css.
    ========================================================================== */
 
@@ -10,43 +10,43 @@
 
 /* Card grids are marked up as lists so text extractors read them as lists;
    strip the list chrome, the cards supply their own. */
-.temp-page ul {
+.home-page ul {
   list-style: none;
 }
 
 /* Clear the fixed navbar, and keep the headline to two lines at 1440px. */
-.temp-page .hero {
+.home-page .hero {
   min-height: auto;
   padding-top: 120px;
   padding-bottom: 60px;
 }
 
-.temp-page .hero-content {
+.home-page .hero-content {
   max-width: 640px;
 }
 
-.temp-page h1 {
+.home-page h1 {
   font-size: clamp(2.2rem, 3.6vw, 3.2rem);
 }
 
 @media (max-width: 768px) {
-  .temp-page .hero {
+  .home-page .hero {
     padding-top: 100px;
   }
 }
 
 /* Section headings carry the page — keep them large and give them room. */
-.temp-page .section-header {
+.home-page .section-header {
   margin-bottom: 56px;
 }
 
-.temp-page .section-header h2 {
+.home-page .section-header h2 {
   font-size: clamp(2rem, 3.4vw, 3rem);
   max-width: 900px;
   margin: 0 auto;
 }
 
-.temp-page .section-header p {
+.home-page .section-header p {
   font-size: 1.15rem;
   max-width: 680px;
   margin-top: 20px;

@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
-const tempProductLinks = [
+const homeProductLinks = [
   { name: 'How It Works', href: '#how-it-works' },
   { name: 'What You Get', href: '#deliverables' },
   { name: 'Integrity Audit', href: '#integrity-audit' },
@@ -27,8 +27,9 @@ const footerLinks = {
 const Footer = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const isTemp = location.pathname.startsWith('/temp')
-  const links = isTemp ? { ...footerLinks, Product: tempProductLinks } : footerLinks
+  // The sales-intelligence page is the homepage; /v1 keeps the previous one.
+  const isLegacy = location.pathname.startsWith('/v1')
+  const links = isLegacy ? footerLinks : { ...footerLinks, Product: homeProductLinks }
 
   const handleLinkClick = (e, link) => {
     e.preventDefault()
@@ -67,9 +68,9 @@ const Footer = () => {
               <img src="/logo-full.png" alt="CloserMetrix - Sales Intelligence for High-Ticket Sales Teams" className="logo-img-full" />
             </a>
             <p>
-              {isTemp
-                ? 'The Sales Intelligence Layer for high-ticket sales teams.'
-                : 'AI-powered sales coaching, call scoring, and conversation intelligence for high-ticket sales teams.'}
+              {isLegacy
+                ? 'AI-powered sales coaching, call scoring, and conversation intelligence for high-ticket sales teams.'
+                : 'The Sales Intelligence Layer for high-ticket sales teams.'}
             </p>
           </motion.div>
 
